@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الدخول — صلة فرز</title>
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f9f9f7; --surface:#fcfcfb; --surface-2:#f3f2ee;
+  --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+  --border:rgba(11,11,11,.10);
+  --accent:#b8233f; --accent-ink:#7d1029; --accent-soft:rgba(184,35,63,.09);
+  --crit:#d03b3b; --crit-soft:rgba(208,59,59,.09);
+  --good:#0ca30c;
+  --shadow:0 1px 2px rgba(11,11,11,.04), 0 4px 16px rgba(11,11,11,.05);
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme: dark;
+    --bg:#0d0d0d; --surface:#1a1a19; --surface-2:#232322;
+    --ink:#ffffff; --ink-2:#c3c2b7; --muted:#898781;
+    --border:rgba(255,255,255,.10);
+    --accent:#e14d68; --accent-ink:#f5a3b3; --accent-soft:rgba(225,77,104,.14);
+    --crit:#ec6b6b; --crit-soft:rgba(236,107,107,.12);
+    --good:#3fcf5f;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.25);
+  }
+}
+*{box-sizing:border-box; margin:0; padding:0}
+html,body{height:100%}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+  background:var(--bg); color:var(--ink); font-size:14px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  display:flex; align-items:center; justify-content:center;
+  min-height:100vh; padding:20px;
+}
+.card{
+  width:100%; max-width:360px; background:var(--surface);
+  border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow);
+  padding:32px 28px 26px; text-align:center;
+}
+.brand-logo{
+  width:52px; height:52px; border-radius:14px; background:var(--accent);
+  color:#fff; display:flex; align-items:center; justify-content:center;
+  font-size:24px; font-weight:800; margin:0 auto 16px;
+}
+h1{font-size:17px; font-weight:800; letter-spacing:-.2px; margin-bottom:4px}
+.sub{font-size:12px; color:var(--muted); margin-bottom:22px}
+form{display:flex; flex-direction:column; gap:10px}
+label{font-size:12px; color:var(--ink-2); font-weight:700; text-align:start; margin-bottom:-4px}
+input{
+  width:100%; padding:11px 13px; border-radius:10px; border:1px solid var(--border);
+  background:var(--surface-2); color:var(--ink); font-size:14px; font-family:inherit;
+  text-align:start;
+}
+input:focus{outline:none; border-color:var(--accent)}
+input::placeholder{color:var(--muted)}
+button{
+  font-family:inherit; cursor:pointer; border:none; border-radius:10px;
+  padding:12px; font-size:14px; font-weight:800; margin-top:6px;
+  background:var(--accent); color:#fff; transition:opacity .15s;
+}
+button:hover{opacity:.92}
+button:disabled{opacity:.6; cursor:default}
+.msg{
+  font-size:12.5px; border-radius:9px; padding:9px 12px; margin-top:2px;
+  text-align:start; display:none;
+}
+.msg.err{background:var(--crit-soft); color:var(--crit); display:block}
+.msg.ok{background:rgba(12,163,12,.09); color:var(--good); display:block}
+.foot{font-size:11px; color:var(--muted); margin-top:20px; line-height:1.7}
+.hidden{display:none !important}
+
+/* logged-in state */
+.session-card .avatar{
+  width:56px; height:56px; border-radius:50%; background:var(--accent-soft);
+  color:var(--accent-ink); font-weight:800; font-size:20px;
+  display:flex; align-items:center; justify-content:center; margin:0 auto 14px;
+}
+.session-name{font-size:16px; font-weight:800}
+.session-role{
+  font-size:11.5px; color:var(--accent-ink); background:var(--accent-soft);
+  display:inline-flex; padding:3px 10px; border-radius:20px; margin-top:8px; font-weight:700;
+}
+.session-email{font-size:12px; color:var(--muted); margin-top:10px}
+.logout-btn{
+  margin-top:20px; background:none; border:1px solid var(--border); color:var(--ink-2);
+  width:100%; padding:11px; border-radius:10px; font-weight:700; font-size:13px;
+}
+.logout-btn:hover{background:var(--surface-2)}
+</style>
+</head>
+<body>
+
+<div class="card" id="loginCard">
+  <div class="brand-logo">صف</div>
+  <h1>منصة صلة فرز</h1>
+  <div class="sub">إدارة التوظيف — تسجيل الدخول</div>
+
+  <form id="loginForm">
+    <label for="email">البريد الإلكتروني</label>
+    <input id="email" type="email" placeholder="you@example.com" required autocomplete="username">
+    <label for="password">كلمة المرور</label>
+    <input id="password" type="password" placeholder="••••••••" required autocomplete="current-password">
+    <div id="msg" class="msg"></div>
+    <button type="submit" id="submitBtn">دخول</button>
+  </form>
+
+  <div class="foot">هذه المنصة خاصة لفريق العمل فقط — الوصول محمي بحساب مخصص لكل عضو، ولا يمكن لأي شخص من خارج الفريق الاطلاع على بيانات المتقدمين.</div>
+</div>
+
+<div class="card session-card hidden" id="sessionCard">
+  <div class="avatar" id="avatarInitial">?</div>
+  <div class="session-name" id="sessionName">—</div>
+  <div class="session-role" id="sessionRole">—</div>
+  <div class="session-email" id="sessionEmail">—</div>
+  <button class="logout-btn" id="logoutBtn">تسجيل الخروج</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// Supabase connection for "صلة فرز" — URL + publishable key are safe to
+// embed in the public frontend; real protection is Row Level Security.
+const SUPABASE_URL = "https://zbeoqlocliihhlfnkafyh.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_DZyb2wifmFeKRD9wYe649Q_r0Gx70Br";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+const loginCard = document.getElementById('loginCard');
+const sessionCard = document.getElementById('sessionCard');
+const form = document.getElementById('loginForm');
+const msg = document.getElementById('msg');
+const submitBtn = document.getElementById('submitBtn');
+
+function showError(text){
+  msg.textContent = text;
+  msg.className = 'msg err';
+}
+
+function translateError(err){
+  const m = (err && err.message) || '';
+  if (m.includes('Invalid login credentials')) return 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+  if (m.includes('Email not confirmed')) return 'هذا الحساب لم يُفعّل بعد — تواصل مع بسام لتفعيله.';
+  if (m.includes('Failed to fetch')) return 'تعذر الاتصال بالخادم — تأكد من اتصالك بالإنترنت.';
+  return 'صار خطأ: ' + m;
+}
+
+async function showSession(user){
+  const { data: profile } = await sb
+    .from('profiles')
+    .select('full_name, email, role')
+    .eq('id', user.id)
+    .single();
+
+  const name = (profile && profile.full_name) || user.email;
+  const role = profile && profile.role === 'admin' ? 'مدير' : 'عضو فريق';
+  const email = (profile && profile.email) || user.email;
+
+  document.getElementById('avatarInitial').textContent = name.trim().charAt(0).toUpperCase();
+  document.getElementById('sessionName').textContent = name;
+  document.getElementById('sessionRole').textContent = role;
+  document.getElementById('sessionEmail').textContent = email;
+
+  loginCard.classList.add('hidden');
+  sessionCard.classList.remove('hidden');
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  msg.className = 'msg';
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'جاري الدخول...';
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'دخول';
+
+  if (error) {
+    showError(translateError(error));
+    return;
+  }
+  await showSession(data.user);
+});
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await sb.auth.signOut();
+  sessionCard.classList.add('hidden');
+  loginCard.classList.remove('hidden');
+  form.reset();
+  msg.className = 'msg';
+});
+
+// If a session already exists (e.g. page reloaded), skip straight to it.
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session && session.user) {
+    await showSession(session.user);
+  }
+})();
+</script>
+
+</body>
+</html>
