@@ -140,6 +140,28 @@ input,select{font-family:inherit}
 .banner b{color:var(--accent-ink)}
 .banner .close{margin-inline-start:auto; background:none; border:none; color:var(--muted); font-size:16px; padding:2px 6px}
 
+/* ---------- Error banner (visible crash report — user has no DevTools access) ---------- */
+#errBanners{
+  position:fixed; inset-inline:0; bottom:0; z-index:1000;
+  display:flex; flex-direction:column; gap:8px; padding:10px;
+  max-height:70vh; overflow-y:auto; pointer-events:none;
+}
+.err-toast{
+  pointer-events:auto; background:var(--surface); border:1px solid var(--crit);
+  border-inline-start:5px solid var(--crit); border-radius:var(--r); box-shadow:var(--shadow);
+  padding:12px 14px; max-width:640px; margin-inline:auto; width:100%;
+  font-size:12.5px; color:var(--ink-2); direction:rtl;
+}
+.err-toast .et-head{display:flex; align-items:center; gap:8px; font-weight:800; color:var(--crit); margin-bottom:4px}
+.err-toast .et-head span:first-child{font-size:15px}
+.err-toast .et-close{margin-inline-start:auto; background:none; border:none; color:var(--muted); font-size:16px; padding:2px 6px; cursor:pointer}
+.err-toast .et-hint{margin-bottom:6px}
+.err-toast .et-detail{
+  direction:ltr; text-align:start; background:var(--surface-2); border-radius:8px; padding:8px 10px;
+  font-family:ui-monospace,Consolas,monospace; font-size:11px; color:var(--muted); white-space:pre-wrap; word-break:break-word;
+  max-height:140px; overflow-y:auto;
+}
+
 /* ---------- Stat tiles ---------- */
 .kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:14px}
 .stat{background:var(--surface); border:1px solid var(--border); border-radius:var(--r); box-shadow:var(--shadow); padding:14px 16px}
@@ -429,6 +451,44 @@ body:not(.locked) #gate{display:none}
 </div>
 <div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
 <div id="tooltip"></div>
+<div id="errBanners"></div>
+
+<script>
+/* ============================================================
+   تقرير الأخطاء المرئي — بسام ما يقدر يفتح أدوات المطور (DevTools)
+   على جهازه، فأي خطأ برمجي يصير كان يختفي بدون أي أثر. هذا الكود
+   يلقط أي خطأ غير متوقع ويعرضه بصندوق أحمر بأسفل الشاشة، عشان يقدر
+   يصوّره ويرسله بالمحادثة بدل ما يبقى الموقع "واقف" بدون تفسير.
+   ============================================================ */
+(function(){
+  function showErrorBanner(hint, detail){
+    var box = document.getElementById("errBanners");
+    if(!box) return;
+    if(box.lastElementChild && box.lastElementChild.dataset.sig === detail) return;
+    while(box.children.length >= 4) box.removeChild(box.firstElementChild);
+    var el = document.createElement("div");
+    el.className = "err-toast";
+    el.dataset.sig = detail;
+    el.innerHTML = '<div class="et-head"><span>⚠️</span><span></span><button class="et-close" type="button">✕</button></div>'
+      + '<div class="et-hint">صار خطأ تقني بالموقع. صوّر هذي الرسالة (لقطة شاشة كاملة) وأرسلها بالمحادثة عشان تنحل بسرعة.</div>'
+      + '<div class="et-detail"></div>';
+    el.querySelector(".et-head span:nth-child(2)").textContent = hint;
+    el.querySelector(".et-detail").textContent = detail;
+    el.querySelector(".et-close").onclick = function(){ el.remove(); };
+    box.appendChild(el);
+  }
+  window.showErrorBanner = showErrorBanner;
+  window.addEventListener("error", function(e){
+    if(!e || typeof e.message !== "string" || !e.message) return; // تجاهل فشل تحميل الموارد (صور/سكربتات) — مو أخطاء برمجية
+    showErrorBanner("خطأ في الصفحة", e.message + "\n" + (e.filename || "") + ":" + (e.lineno || "") + ":" + (e.colno || ""));
+  });
+  window.addEventListener("unhandledrejection", function(e){
+    var r = e && e.reason;
+    var msg = (r && (r.message || String(r))) || "خطأ غير معروف";
+    showErrorBanner("خطأ في عملية غير مكتملة", msg);
+  });
+})();
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
@@ -466,6 +526,7 @@ function parseD(s){ const [y,m,d] = s.split("-").map(Number); return new Date(y,
 function fmtDate(s){ if(!s) return "—"; const d = parseD(s); return d.getDate() + " " + MONTHS[d.getMonth()]; }
 function fmtDateFull(s){ if(!s) return "—"; const d = parseD(s); return DAYS[d.getDay()] + " " + d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear(); }
 function relDate(s){
+  if(!s) return "—";
   const d = parseD(s), t = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
   const diff = Math.round((t - d) / 86400000);
   if(diff <= 0 && diff > -1) return "اليوم";
@@ -739,8 +800,13 @@ function go(id, keepScroll){
   const sy = keepScroll ? ($(".main").scrollTop || window.scrollY) : 0;
   renderSidebar();
   renderTopbar();
-  $("#view").innerHTML = VIEWS[id].render();
-  bindView();
+  try{
+    $("#view").innerHTML = VIEWS[id].render();
+    bindView();
+  }catch(e){
+    console.error("go(" + id + ") render/bind failed:", e);
+    if(window.showErrorBanner) window.showErrorBanner("فشل عرض صفحة «" + (VIEWS[id] && VIEWS[id].title || id) + "»", (e && e.stack) || String(e));
+  }
   $(".main").scrollTop = sy;
   window.scrollTo(0, keepScroll ? sy : 0);
 }
