@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>صلة فرز — منصة بسام لإدارة التوظيف</title>
+<style>
+/* ============================================================
+   صلة فرز — Silat Farz Recruitment Platform
+   Light/dark theme via CSS custom properties (validated palette)
+   ============================================================ */
+:root{
+  color-scheme: light;
+  --bg:#f9f9f7; --surface:#fcfcfb; --surface-2:#f3f2ee;
+  --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --baseline:#c3c2b7; --border:rgba(11,11,11,.10);
+  --accent:#b8233f; --accent-ink:#7d1029; --accent-soft:rgba(184,35,63,.09);
+  --s1:#b8233f; --s2:#eb6834; --s3:#1baf7a; --s-other:#a5a49d;
+  --good:#0ca30c; --good-text:#006300; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
+  --ord1:#ef869a; --ord2:#e75570; --ord3:#d62a4a; --ord4:#ab1c37; --ord5:#6b0d1f;
+  --shadow:0 1px 2px rgba(11,11,11,.04), 0 4px 16px rgba(11,11,11,.05);
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --bg:#0d0d0d; --surface:#1a1a19; --surface-2:#232322;
+    --ink:#ffffff; --ink-2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --baseline:#383835; --border:rgba(255,255,255,.10);
+    --accent:#e14d68; --accent-ink:#f5a3b3; --accent-soft:rgba(225,77,104,.14);
+    --s1:#e14d68; --s2:#d95926; --s3:#199e70; --s-other:#6d6c66;
+    --good:#0ca30c; --good-text:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
+    --ord1:#f6b7c3; --ord2:#ef869a; --ord3:#e75570; --ord4:#bf2542; --ord5:#95182f;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0d0d0d; --surface:#1a1a19; --surface-2:#232322;
+  --ink:#ffffff; --ink-2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --baseline:#383835; --border:rgba(255,255,255,.10);
+  --accent:#e14d68; --accent-ink:#f5a3b3; --accent-soft:rgba(225,77,104,.14);
+  --s1:#e14d68; --s2:#d95926; --s3:#199e70; --s-other:#6d6c66;
+  --good:#0ca30c; --good-text:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
+  --ord1:#f6b7c3; --ord2:#ef869a; --ord3:#e75570; --ord4:#bf2542; --ord5:#95182f;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box; margin:0; padding:0}
+html,body{height:100%}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+  background:var(--bg); color:var(--ink); font-size:14px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit; cursor:pointer}
+input,select{font-family:inherit}
+
+/* ---------- Layout ---------- */
+.app{display:flex; min-height:100vh}
+.sidebar{
+  width:225px; flex-shrink:0; background:var(--surface);
+  border-inline-start:none; border-inline-end:1px solid var(--border);
+  padding:16px 12px; position:sticky; top:0; height:100vh; overflow-y:auto;
+  display:flex; flex-direction:column; gap:2px;
+}
+.brand{display:flex; align-items:center; gap:10px; padding:6px 8px 16px}
+.brand-logo{
+  width:38px; height:38px; border-radius:10px; background:var(--accent);
+  color:#fff; display:flex; align-items:center; justify-content:center;
+  font-size:19px; font-weight:800; flex-shrink:0;
+}
+.brand-name{font-size:17px; font-weight:800; letter-spacing:-.2px}
+.brand-sub{font-size:10.5px; color:var(--muted); margin-top:-3px}
+.nav-label{font-size:10.5px; color:var(--muted); padding:12px 10px 4px; font-weight:700}
+.nav-item{
+  display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:9px;
+  color:var(--ink-2); background:none; border:none; width:100%; text-align:start;
+  font-size:13.5px; transition:background .12s;
+}
+.nav-item svg{width:17px; height:17px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+.nav-item:hover{background:var(--surface-2)}
+.nav-item.active{background:var(--accent-soft); color:var(--accent-ink); font-weight:700}
+.nav-count{
+  margin-inline-start:auto; font-size:11px; background:var(--surface-2);
+  color:var(--muted); border-radius:20px; padding:0 7px; min-width:20px; text-align:center;
+  font-variant-numeric:tabular-nums;
+}
+.nav-item.active .nav-count{background:var(--accent); color:#fff}
+.sidebar-foot{margin-top:auto; padding:12px 8px 4px; border-top:1px solid var(--border)}
+.user-chip{display:flex; align-items:center; gap:9px}
+.user-avatar{
+  width:32px; height:32px; border-radius:50%; background:var(--accent-soft);
+  color:var(--accent-ink); font-weight:800; font-size:13px;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.user-name{font-size:12.5px; font-weight:700}
+.user-role{font-size:10.5px; color:var(--muted)}
+
+.main{flex:1; min-width:0; display:flex; flex-direction:column}
+.topbar{
+  display:flex; align-items:center; gap:10px; padding:12px 20px;
+  border-bottom:1px solid var(--border); background:var(--surface);
+  position:sticky; top:0; z-index:40;
+}
+.page-title{font-size:16px; font-weight:800; margin-inline-end:auto}
+.chip{
+  display:inline-flex; align-items:center; gap:6px; font-size:11.5px;
+  border:1px solid var(--border); border-radius:20px; padding:3px 10px;
+  color:var(--ink-2); background:var(--surface); white-space:nowrap;
+}
+.dot{width:7px; height:7px; border-radius:50%; flex-shrink:0}
+.dot.off{background:var(--muted)} .dot.on{background:var(--good)} .dot.wait{background:var(--warn)}
+.icon-btn{
+  width:32px; height:32px; border-radius:9px; border:1px solid var(--border);
+  background:var(--surface); color:var(--ink-2); display:flex; align-items:center;
+  justify-content:center; font-size:15px;
+}
+.icon-btn:hover{background:var(--surface-2)}
+.content{padding:20px; max-width:1200px; width:100%; margin:0 auto}
+
+/* ---------- Cards & general ---------- */
+.card{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  box-shadow:var(--shadow); padding:16px;
+}
+.card-title{font-size:13px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px}
+.card-title .hint{font-weight:400; font-size:11px; color:var(--muted); margin-inline-start:auto}
+.grid{display:grid; gap:14px}
+.grid-2{grid-template-columns:1fr 1fr}
+@media (max-width:860px){ .grid-2{grid-template-columns:1fr} }
+.section-gap{margin-bottom:14px}
+
+/* ---------- Demo banner ---------- */
+.banner{
+  display:flex; align-items:center; gap:10px; background:var(--accent-soft);
+  border:1px solid var(--border); border-radius:var(--r); padding:10px 14px;
+  font-size:12.5px; color:var(--ink-2); margin-bottom:14px;
+}
+.banner b{color:var(--accent-ink)}
+.banner .close{margin-inline-start:auto; background:none; border:none; color:var(--muted); font-size:16px; padding:2px 6px}
+
+/* ---------- Stat tiles ---------- */
+.kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:14px}
+.stat{background:var(--surface); border:1px solid var(--border); border-radius:var(--r); box-shadow:var(--shadow); padding:14px 16px}
+.stat-label{font-size:11.5px; color:var(--muted); margin-bottom:4px}
+.stat-value{font-size:26px; font-weight:700; line-height:1.15}
+.stat-delta{font-size:11px; margin-top:3px; color:var(--muted)}
+.stat-delta.up{color:var(--good-text); font-weight:700}
+
+/* ---------- Tables ---------- */
+.tbl-wrap{overflow-x:auto}
+table{width:100%; border-collapse:collapse; font-size:13px}
+th{
+  text-align:start; font-size:11px; color:var(--muted); font-weight:700;
+  padding:8px 10px; border-bottom:1px solid var(--grid); white-space:nowrap;
+}
+td{padding:9px 10px; border-bottom:1px solid var(--grid); white-space:nowrap; vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr{cursor:pointer; transition:background .1s}
+tbody tr:hover{background:var(--surface-2)}
+.td-name{font-weight:700}
+.td-sub{font-size:11px; color:var(--muted); font-weight:400}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- Badges ---------- */
+.badge{
+  display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700;
+  border-radius:20px; padding:2px 9px; white-space:nowrap;
+}
+.badge .dot{width:6px; height:6px}
+.b-stage1{background:var(--accent-soft); color:var(--accent-ink)}
+.b-neutral{background:var(--surface-2); color:var(--ink-2)}
+.b-good{background:rgba(12,163,12,.12); color:var(--good-text)}
+.b-crit{background:rgba(208,59,59,.12); color:var(--crit)}
+.b-warn{background:rgba(250,178,25,.15); color:var(--ink-2)}
+.stars{color:var(--warn); font-size:12px; letter-spacing:1px; white-space:nowrap}
+.stars .off{color:var(--grid)}
+.src-tag{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; color:var(--ink-2)}
+.src-tag .sq{width:8px; height:8px; border-radius:2px; flex-shrink:0}
+
+/* ---------- Toolbar / filters ---------- */
+.toolbar{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px}
+.search{
+  flex:1; min-width:180px; display:flex; align-items:center; gap:8px;
+  background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:7px 12px;
+}
+.search input{border:none; outline:none; background:none; color:var(--ink); width:100%; font-size:13px}
+.search svg{width:15px; height:15px; stroke:var(--muted); fill:none; stroke-width:2; stroke-linecap:round; flex-shrink:0}
+.select{
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:7px 10px; font-size:12.5px; color:var(--ink-2); outline:none; max-width:170px;
+}
+.result-count{font-size:11.5px; color:var(--muted); margin-top:10px}
+
+/* ---------- Candidate cards ---------- */
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px}
+.cand-card{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  box-shadow:var(--shadow); padding:14px; cursor:pointer; transition:border-color .12s;
+}
+.cand-card:hover{border-color:var(--accent)}
+.cand-head{display:flex; align-items:center; gap:10px; margin-bottom:9px}
+.cand-avatar{
+  width:36px; height:36px; border-radius:50%; flex-shrink:0;
+  background:var(--accent-soft); color:var(--accent-ink);
+  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px;
+}
+.cand-name{font-weight:800; font-size:13.5px}
+.cand-title{font-size:11.5px; color:var(--muted)}
+.cand-meta{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px}
+.cand-foot{display:flex; align-items:center; justify-content:space-between; margin-top:10px; padding-top:9px; border-top:1px solid var(--grid)}
+
+/* ---------- Kanban ---------- */
+.kanban{display:flex; gap:12px; overflow-x:auto; padding-bottom:8px}
+.kcol{min-width:200px; width:200px; flex-shrink:0}
+.kcol-head{
+  display:flex; align-items:center; gap:7px; font-size:12.5px; font-weight:800;
+  padding:8px 10px; background:var(--surface); border:1px solid var(--border);
+  border-radius:10px; margin-bottom:8px;
+}
+.kcol-count{margin-inline-start:auto; font-size:11px; color:var(--muted); font-variant-numeric:tabular-nums}
+.kcard{
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:10px 12px; margin-bottom:8px; cursor:pointer; box-shadow:var(--shadow);
+}
+.kcard:hover{border-color:var(--accent)}
+.kcard-name{font-weight:700; font-size:12.5px}
+.kcard-sub{font-size:11px; color:var(--muted); margin-top:2px}
+.kempty{font-size:11.5px; color:var(--muted); text-align:center; padding:14px 8px; border:1px dashed var(--grid); border-radius:10px}
+
+/* ---------- Tasks ---------- */
+.task-day{font-size:11.5px; font-weight:800; color:var(--muted); margin:14px 0 8px}
+.task-day:first-child{margin-top:0}
+.task-row{
+  display:flex; align-items:center; gap:12px; background:var(--surface);
+  border:1px solid var(--border); border-radius:10px; padding:10px 14px; margin-bottom:8px;
+}
+.task-check{
+  width:19px; height:19px; border-radius:6px; border:1.5px solid var(--baseline);
+  background:none; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  color:transparent; font-size:12px;
+}
+.task-row.done .task-check{background:var(--good); border-color:var(--good); color:#fff}
+.task-row.done .task-title{text-decoration:line-through; color:var(--muted)}
+.task-title{font-weight:700; font-size:13px}
+.task-sub{font-size:11px; color:var(--muted)}
+.task-time{margin-inline-start:auto; font-size:12px; color:var(--ink-2); font-variant-numeric:tabular-nums; white-space:nowrap}
+
+/* ---------- Charts (div-based bars) ---------- */
+.bar-row{display:flex; align-items:center; gap:10px; min-height:26px}
+.bar-label{width:110px; flex-shrink:0; font-size:11.5px; color:var(--ink-2); text-align:start; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.bar-track{flex:1; display:flex; align-items:center; gap:7px}
+.bar-fill{height:16px; border-radius:0 4px 4px 0; min-width:3px; transition:width .3s}
+[dir="rtl"] .bar-fill{border-radius:4px 0 0 4px}
+.bar-val{font-size:11.5px; color:var(--ink-2); font-variant-numeric:tabular-nums}
+.stack{display:flex; gap:2px; height:18px; border-radius:5px; overflow:hidden; margin:6px 0 12px}
+.stack-seg{height:100%; min-width:4px}
+.legend{display:flex; flex-wrap:wrap; gap:12px; font-size:11.5px; color:var(--ink-2)}
+.legend .key{display:flex; align-items:center; gap:6px}
+.legend .sw{width:9px; height:9px; border-radius:2.5px; flex-shrink:0}
+.legend b{font-variant-numeric:tabular-nums}
+.chart-note{font-size:10.5px; color:var(--muted); margin-top:10px}
+
+/* ---------- Empty states ---------- */
+.empty{
+  text-align:center; padding:36px 20px; color:var(--muted);
+  border:1.5px dashed var(--grid); border-radius:var(--r); font-size:13px;
+}
+.empty .big{font-size:26px; margin-bottom:8px}
+.empty b{color:var(--ink-2)}
+
+/* ---------- Settings ---------- */
+.conn-card{display:flex; align-items:flex-start; gap:12px; padding:14px 0; border-bottom:1px solid var(--grid)}
+.conn-card:last-child{border-bottom:none}
+.conn-icon{
+  width:38px; height:38px; border-radius:10px; background:var(--surface-2);
+  display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0;
+}
+.conn-name{font-weight:800; font-size:13px}
+.conn-desc{font-size:11.5px; color:var(--muted); margin-top:2px; line-height:1.55}
+.cmd{
+  display:block; width:100%; text-align:start; background:var(--surface-2); border:1px solid var(--border);
+  border-radius:9px; padding:8px 12px; font-size:12.5px; color:var(--ink-2); margin-bottom:7px;
+}
+.cmd:hover{border-color:var(--accent); color:var(--accent-ink)}
+.cmd b{color:var(--accent-ink)}
+
+/* ---------- Modal ---------- */
+.overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:100;
+  display:none; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto;
+}
+.overlay.open{display:flex}
+.modal{
+  background:var(--surface); border:1px solid var(--border); border-radius:16px;
+  width:100%; max-width:520px; padding:22px; box-shadow:0 20px 60px rgba(0,0,0,.3);
+}
+.modal-head{display:flex; align-items:center; gap:12px; margin-bottom:14px}
+.modal-close{margin-inline-start:auto; background:none; border:none; font-size:20px; color:var(--muted); padding:4px 8px}
+.detail-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px 16px; margin:14px 0}
+@media (max-width:480px){ .detail-grid{grid-template-columns:1fr} }
+.detail-item .dl{font-size:10.5px; color:var(--muted)}
+.detail-item .dv{font-size:13px; font-weight:600; word-break:break-word}
+.timeline{display:flex; align-items:center; gap:0; margin:16px 0 6px}
+.tl-step{flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; position:relative}
+.tl-dot{width:13px; height:13px; border-radius:50%; background:var(--grid); border:2px solid var(--surface); z-index:2}
+.tl-step.on .tl-dot{background:var(--accent)}
+.tl-step.cur .tl-dot{box-shadow:0 0 0 3px var(--accent-soft)}
+.tl-line{position:absolute; top:6px; inset-inline-start:-50%; width:100%; height:2px; background:var(--grid); z-index:1}
+.tl-step.on .tl-line{background:var(--accent)}
+.tl-step:first-child .tl-line{display:none}
+.tl-name{font-size:9.5px; color:var(--muted); text-align:center}
+.tl-step.cur .tl-name{color:var(--accent-ink); font-weight:800}
+.modal-note{
+  background:var(--accent-soft); border-radius:10px; padding:10px 13px;
+  font-size:11.5px; color:var(--ink-2); margin-top:14px; line-height:1.6;
+}
+.notes-box{background:var(--surface-2); border-radius:10px; padding:10px 13px; font-size:12.5px; color:var(--ink-2); line-height:1.7}
+
+/* ---------- Tooltip ---------- */
+#tooltip{
+  position:fixed; z-index:200; background:var(--ink); color:var(--bg);
+  font-size:11.5px; padding:6px 10px; border-radius:8px; pointer-events:none;
+  display:none; max-width:220px; box-shadow:0 4px 14px rgba(0,0,0,.25);
+}
+#tooltip b{font-variant-numeric:tabular-nums}
+
+/* ---------- Responsive: narrow panel ---------- */
+@media (max-width:820px){
+  .app{flex-direction:column}
+  .sidebar{
+    width:100%; height:auto; position:static; flex-direction:row; align-items:center;
+    overflow-x:auto; padding:8px 10px; gap:4px; border-inline-end:none;
+    border-bottom:1px solid var(--border);
+  }
+  .brand{padding:0 4px; margin-inline-end:6px}
+  .brand-sub, .nav-label, .sidebar-foot{display:none}
+  .nav-item{width:auto; white-space:nowrap; padding:7px 11px; font-size:12.5px}
+  .nav-item svg{width:15px; height:15px}
+  .content{padding:14px}
+  .topbar{padding:10px 14px; flex-wrap:wrap}
+}
+::-webkit-scrollbar{height:8px; width:8px}
+::-webkit-scrollbar-thumb{background:var(--baseline); border-radius:8px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* عرض المزيد — للقوائم الكبيرة */
+.btn-more{display:block; width:100%; margin:10px 0 4px; padding:11px; border:1.5px dashed var(--border); border-radius:11px; background:var(--bg); color:var(--accent); font-size:13px; font-weight:800; cursor:pointer; font-family:inherit}
+.btn-more:hover{border-color:var(--accent)}
+.btn-more span{color:var(--muted); font-weight:600; font-size:11.5px}
+.kmore{padding:9px; text-align:center; font-size:11px; color:var(--muted); background:var(--bg); border:1px dashed var(--border); border-radius:9px; margin-top:6px}
+
+/* زر استبعاد/إرجاع مباشر */
+.row-del{
+  width:26px; height:26px; flex-shrink:0; border-radius:8px; border:1px solid var(--border);
+  background:var(--surface-2); color:var(--muted); font-size:13px; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center; font-family:inherit;
+}
+.row-del:hover{border-color:var(--crit); color:var(--crit)}
+
+/* شواغر — قائمة المرشحين المرتبطين وزر الاختيار */
+.vac-cands{margin-top:10px; display:flex; flex-direction:column; gap:6px}
+.vac-cand-row{display:flex; align-items:center; gap:8px; padding:6px 8px; background:var(--surface-2); border-radius:9px; cursor:pointer}
+.vac-cand-row:hover{background:var(--accent-soft)}
+.pick-btn{
+  flex-shrink:0; font-size:10.5px; font-weight:700; padding:4px 9px; border-radius:20px; cursor:pointer;
+  border:1px solid var(--border); background:var(--surface); color:var(--muted); font-family:inherit;
+}
+.pick-btn:hover{border-color:var(--warn)}
+.pick-btn.on{background:var(--warn); border-color:var(--warn); color:#fff}
+
+/* نسخ سريع للجوال/الإيميل داخل نافذة التفاصيل */
+.cp-mini{background:none; border:1px solid transparent; border-radius:6px; padding:2px 5px; font:inherit; font-size:13px; font-weight:600; color:var(--ink); cursor:pointer; word-break:break-all}
+.cp-mini:hover{background:var(--surface-2); border-color:var(--border)}
+
+/* رابط فتح الرسالة الأصلية في Gmail */
+.btn-gmail{
+  display:flex; align-items:center; justify-content:center; gap:8px; width:100%;
+  margin:14px 0 2px; padding:11px; border-radius:11px; border:1.5px solid var(--accent);
+  background:var(--accent-soft); color:var(--accent-ink); font-size:12.5px; font-weight:800;
+  text-decoration:none; box-sizing:border-box;
+}
+.btn-gmail:hover{background:var(--accent); color:#fff}
+</style>
+</head>
+<body class="locked">
+<style>
+/* ---------- بوابة الدخول (تسجيل دخول حقيقي عبر Supabase) ---------- */
+body.locked .app{display:none}
+body:not(.locked) #gate{display:none}
+#gate{position:fixed; inset:0; background:var(--bg); z-index:500; display:flex; align-items:center; justify-content:center; padding:20px; overflow-y:auto}
+.gate-card{background:var(--surface); border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow); padding:36px 30px; width:100%; max-width:360px; text-align:center; margin:auto}
+.gate-logo{width:64px; height:64px; border-radius:16px; background:var(--accent); color:#fff; font-size:27px; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 14px}
+.gate-title{font-size:19px; font-weight:800}
+.gate-sub{font-size:12px; color:var(--muted); margin:4px 0 20px}
+.gate-input{width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:11px; background:var(--bg); color:var(--ink); font-size:14px; text-align:start; outline:none; margin-bottom:10px; font-family:inherit}
+.gate-input:focus{border-color:var(--accent)}
+.gate-label{font-size:12px; color:var(--ink-2); font-weight:700; text-align:start; display:block; margin-bottom:5px}
+.gate-btn{width:100%; margin-top:6px; padding:11px; border:none; border-radius:11px; background:var(--accent); color:#fff; font-size:14px; font-weight:800; font-family:inherit; cursor:pointer}
+.gate-btn:disabled{opacity:.6; cursor:default}
+.gate-err{color:var(--crit); font-size:12px; min-height:18px; margin-top:10px; font-weight:700}
+.gate-note{font-size:10.5px; color:var(--muted); margin-top:16px; line-height:1.7}
+.logout-link{background:none; border:1px solid var(--border); color:var(--ink-2); font-size:11px; padding:5px 10px; border-radius:8px; font-family:inherit; cursor:pointer; width:100%; margin-top:8px}
+.logout-link:hover{border-color:var(--crit); color:var(--crit)}
+</style>
+
+<div id="gate"><div class="gate-card">
+  <div class="gate-logo">صف</div>
+  <div class="gate-title">منصة صلة فرز</div>
+  <div class="gate-sub">إدارة التوظيف — تسجيل الدخول</div>
+  <form id="gateForm">
+    <label class="gate-label" for="gateEmail">البريد الإلكتروني</label>
+    <input class="gate-input" id="gateEmail" type="email" placeholder="you@example.com" required autocomplete="username">
+    <label class="gate-label" for="gatePass">كلمة المرور</label>
+    <input class="gate-input" id="gatePass" type="password" placeholder="••••••••" required autocomplete="current-password">
+    <button class="gate-btn" id="gateBtn" type="submit">دخول</button>
+  </form>
+  <div class="gate-err" id="gateErr"></div>
+  <div class="gate-note">🔒 هذه المنصة خاصة لفريق العمل فقط — الوصول محمي بحساب مخصص لكل عضو، ولا يمكن لأي شخص من خارج الفريق الاطلاع على بيانات المتقدمين.</div>
+</div></div>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <div class="topbar" id="topbar"></div>
+    <div class="content" id="view"></div>
+  </div>
+</div>
+<div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+<div id="tooltip"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+/* ============================================================
+   صلة فرز — الاتصال بقاعدة البيانات (Supabase)
+   ============================================================ */
+const SUPABASE_URL = "https://zbeoqloclihhlfnkafyh.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_DZyb2wifmFeKRD9wYe649Q_r0Gx70Br";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+let DB = null;
+
+/* ===== FARZ_SEED_START =====
+   البيانات الثابتة (تخصصات، مدن، مراحل، مصادر، مهام، سلة المهملات، معلومات عامة)
+   — هذي مو من قاعدة البيانات، تُحدَّث يدوياً بواسطة Claude عند الحاجة. */
+const FARZ_SEED = {"meta": {"owner": "بسام العريفي", "role": "مسؤول التوظيف", "version": "3.0", "lastUpdate": "2026-08-27", "demo": false, "connections": {"gmail": {"status": "on", "label": "مربوط — bajop369@gmail.com · الأرشيف كامل: سبتمبر 2025 → 27 أغسطس 2026"}, "device": {"status": "wait", "label": "بانتظار إضافة مجلد السير من جهازك (زر Add folder)"}, "oldSite": {"status": "wait", "label": "بانتظار ملف التصدير من الموقع القديم"}}}, "specialties": ["الطب", "الهندسة", "تقنية المعلومات", "المبيعات", "التسويق", "تطوير الأعمال", "المشتريات", "المالية والمحاسبة", "الموارد البشرية", "القانون", "المشاريع", "العمليات", "خدمة العملاء", "التصميم", "التعليم", "الإدارة", "السياحة", "خريجون جدد", "أخرى"], "cities": ["الرياض", "جدة", "مكة المكرمة", "المدينة المنورة", "الدمام", "الخبر", "الظهران", "الطائف", "تبوك", "بريدة والقصيم", "خميس مشيط", "أبها", "حائل", "نجران", "جازان", "الأحساء", "ينبع", "القطيف", "عرعر", "سكاكا والجوف", "الجبيل", "رابغ", "بيشة", "الباحة", "حفر الباطن", "أخرى"], "stages": ["جديد", "فرز أولي", "مقابلة", "عرض وظيفي", "تعيين"], "sources": ["Gmail", "ملفات الجهاز", "الموقع القديم", "إدخال يدوي"], "tasks": [{"id": "t1", "title": "استكشاف الأرشيف الكامل المسحوب من الإيميل (سبتمبر 2025 → اليوم)", "type": "مهمة", "candidateId": null, "date": "2026-08-27", "time": "", "done": false}, {"id": "t2", "title": "مراجعة المرشحين المميزين بنجمة ⭐ والتواصل مع الأفضل", "type": "مهمة", "candidateId": null, "date": "2026-08-28", "time": "", "done": false}], "trash": [{"id": "x1", "name": "شركة كفاءة للاستقدام", "reason": "جهة استقدام — ليست مرشحاً", "date": "2026-08-18"}, {"id": "x2", "name": "شركة جعفر لإلحاق العمالة", "reason": "جهة استقدام — ليست مرشحاً (3 رسائل)", "date": "2026-08-17"}, {"id": "x3", "name": "الشركة المصرية الدولية للاستقدام", "reason": "جهة استقدام — ليست مرشحاً", "date": "2026-08-17"}, {"id": "x4", "name": "معهد Black Gold للتدريب", "reason": "عرض خدمات تدريب — ليس مرشحاً", "date": "2026-08-17"}, {"id": "x5", "name": "شركة الطائف للتوظيف بالخارج", "reason": "جهة استقدام — ليست مرشحاً (رسالتان)", "date": "2026-08-18"}, {"id": "x6", "name": "شركة الفراعنة للسفريات", "reason": "جهة استقدام — ليست مرشحاً (رسالتان)", "date": "2026-08-13"}, {"id": "x7", "name": "Elamany Recruitment (ترخيص 604)", "reason": "جهة استقدام — ليست مرشحاً", "date": "2026-08-04"}, {"id": "x8", "name": "منصة SAS Jobs", "reason": "عرض خدمات توظيف — ليست مرشحاً", "date": "2026-08-13"}, {"id": "x9", "name": "شركة قطرة الحياة للخدمات البيئية", "reason": "عرض خدمات — ليست مرشحاً", "date": "2026-08-11"}, {"id": "x10", "name": "Astroline (بريد ترويجي)", "reason": "رسائل ترويجية — ليست تقديماً", "date": "2026-08-06"}, {"id": "x11", "name": "EasyHire (easyhire.sa)", "reason": "تسويق خدمة أتمتة توظيف — ليست مرشحاً (رسائل متكررة)", "date": "2025-11-10"}, {"id": "x12", "name": "التعاونية للتأمين (Tawuniya)", "reason": "عروض تأمين تسويقية — ليست مرشحاً (رسائل متكررة)", "date": "2026-06-01"}, {"id": "x13", "name": "Innovation4HR / سما جروب / الرحمة HR / طابا الدولية", "reason": "شركات إلحاق عمالة مصرية — ليست مرشحين", "date": "2026-04-10"}, {"id": "x14", "name": "Fine International (الهند)", "reason": "شركة استقدام عمالة من الهند — ليست مرشحاً", "date": "2026-04-16"}, {"id": "x15", "name": "SAS Jobs / Rakeez / RecruiteForU / رسالة HR", "reason": "مكاتب توظيف تعرض خدماتها — ليست مرشحين", "date": "2026-04-08"}, {"id": "x16", "name": "غسان ماضي (شهادات الأيزو)", "reason": "تسويق شهادات ISO — ليست مرشحاً (رسائل متكررة)", "date": "2025-12-20"}, {"id": "x17", "name": "HR Link / منصة أسعى / بصمة الأمل", "reason": "منصات وخدمات موارد بشرية — ليست مرشحين", "date": "2026-05-01"}, {"id": "x18", "name": "أمين لخدمات التأمين", "reason": "عروض تأمين تسويقية — ليست مرشحاً (رسائل متكررة)", "date": "2025-11-20"}, {"id": "x19", "name": "شركات حراسات أمنية (قمة الأمن وغيرها)", "reason": "تسويق خدمات حراسة — ليست مرشحين", "date": "2026-03-16"}, {"id": "x20", "name": "Forlanse / Brevo (رسائل تسويق آلية)", "reason": "إعلانات نشر وظائف وتسويق آلي — ليست تقديمات", "date": "2026-07-20"}, {"id": "x21", "name": "إشعارات Google الآلية (no-reply)", "reason": "تنبيهات أمنية وترحيبية آلية — ليست تقديمات", "date": "2026-06-18"}, {"id": "x22", "name": "مرجان / منصات إعلانات وظائف", "reason": "إشعارات آلية من منصات — ليست تقديمات", "date": "2025-11-05"}]};
+/* ===== FARZ_SEED_END ===== */
+</script>
+<script>
+/* ============================================================
+   صلة فرز — منطق الواجهة
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const TODAY = new Date();
+const MONTHS = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+const DAYS = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+
+function esc(s){ return String(s ?? "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+function normAr(s){
+  return String(s ?? "")
+    .replace(/[ً-ٰٟۖ-ۭ]/g, "")
+    .replace(/[أإآا]/g, "ا").replace(/ة/g, "ه").replace(/[ىي]/g, "ي").replace(/ـ/g, "")
+    .toLowerCase().trim();
+}
+function parseD(s){ const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); }
+function fmtDate(s){ if(!s) return "—"; const d = parseD(s); return d.getDate() + " " + MONTHS[d.getMonth()]; }
+function fmtDateFull(s){ if(!s) return "—"; const d = parseD(s); return DAYS[d.getDay()] + " " + d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear(); }
+function relDate(s){
+  const d = parseD(s), t = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
+  const diff = Math.round((t - d) / 86400000);
+  if(diff <= 0 && diff > -1) return "اليوم";
+  if(diff === 1) return "أمس";
+  if(diff > 1 && diff <= 14) return "قبل " + diff + " أيام";
+  return fmtDate(s);
+}
+function initials(name){ const p = (name || "؟").trim().split(/\s+/); return (p[0]?.[0] || "؟") + (p[1]?.[0] || ""); }
+function dn(c){ return c.name || (c.email ? c.email.split("@")[0] : "غير مذكور"); }
+function yrs(c){ return (c.years === null || c.years === undefined || c.years === "") ? "—" : c.years + " س"; }
+function stars(n){
+  if(!n) return `<span class="td-sub" title="لم يقيَّم بعد — قل لي مثلاً: «قيّم [الاسم] 4 نجوم»">غير مقيّم</span>`;
+  let h = "";
+  for(let i=1; i<=5; i++) h += `<span class="${i<=n ? "" : "off"}">★</span>`;
+  return `<span class="stars" title="التقييم ${n} من 5">${h}</span>`;
+}
+const SRC_COLORS = {"Gmail":"var(--s1)","ملفات الجهاز":"var(--s2)","الموقع القديم":"var(--s3)","إدخال يدوي":"var(--s-other)"};
+function srcTag(src){ return `<span class="src-tag"><span class="sq" style="background:${SRC_COLORS[src] || "var(--s-other)"}"></span>${esc(src)}</span>`; }
+function stageBadge(c){
+  if(c.rejected) return `<span class="badge b-crit">✕ مرفوض</span>`;
+  if(c.stage === "تعيين") return `<span class="badge b-good">✓ تعيين</span>`;
+  if(c.stage === "جديد") return `<span class="badge b-neutral">جديد</span>`;
+  return `<span class="badge b-stage1">${esc(c.stage)}</span>`;
+}
+function vacName(id){ const v = DB.vacancies.find(v => v.id === id); return v ? v.title + " — " + v.client : null; }
+function gmailSearchLink(c){
+  if(!c.email || !c.date || c.source !== "Gmail") return null;
+  const [y,m,dd] = c.date.split("-").map(Number);
+  const next = new Date(y, m-1, dd+1);
+  const pad = n => String(n).padStart(2,"0");
+  const dfmt = y + "/" + pad(m) + "/" + pad(dd);
+  const nfmt = next.getFullYear() + "/" + pad(next.getMonth()+1) + "/" + pad(next.getDate());
+  const q = `from:${c.email} after:${dfmt} before:${nfmt}`;
+  return "https://mail.google.com/mail/u/0/#search/" + encodeURIComponent(q);
+}
+const activeCands = () => DB.candidates.filter(c => !c.rejected);
+
+/* ---------- KPIs ---------- */
+function weekCount(){
+  const t = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
+  return DB.candidates.filter(c => (t - parseD(c.date)) / 86400000 <= 7).length;
+}
+const KPI = {
+  total: () => DB.candidates.length,
+  fresh: weekCount,
+  inProcess: () => DB.candidates.filter(c => !c.rejected && c.stage !== "تعيين").length,
+  shortlisted: () => DB.candidates.filter(c => c.shortlisted && !c.rejected).length,
+  openVac: () => DB.vacancies.filter(v => v.status === "مفتوح").length,
+  upcoming: () => DB.tasks.filter(t => !t.done && parseD(t.date) >= new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate())).length
+};
+
+/* ---------- الأيقونات ---------- */
+const I = {
+  dash:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+  bank:'<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>',
+  users:'<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  star:'<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  case:'<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+  flow:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="7" rx="1"/></svg>',
+  cal:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+  chart:'<svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg>',
+  trash:'<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  link:'<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+  search:'<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>',
+  team:'<svg viewBox="0 0 24 24"><path d="M12 2 3 6v6c0 5 3.8 8.4 9 10 5.2-1.6 9-5 9-10V6z"/><path d="m9 12 2 2 4-4"/></svg>'
+};
+
+/* ---------- التنقل ---------- */
+const NAV = [
+  {group:"الرئيسية"},
+  {id:"dashboard", label:"لوحة التحكم", icon:I.dash},
+  {id:"cvbank", label:"بنك السير الذكية", icon:I.bank, count: () => DB.candidates.length},
+  {id:"candidates", label:"قائمة المرشحين", icon:I.users, count: () => activeCands().length},
+  {id:"shortlist", label:"الترشيح", icon:I.star, count: KPI.shortlisted},
+  {group:"التوظيف"},
+  {id:"vacancies", label:"الشواغر", icon:I.case, count: () => DB.vacancies.length},
+  {id:"pipeline", label:"مسار التوظيف", icon:I.flow},
+  {id:"tasks", label:"المهام والمقابلات", icon:I.cal, count: KPI.upcoming},
+  {group:"الإدارة"},
+  {id:"reports", label:"التقارير", icon:I.chart},
+  {id:"trash", label:"سلة المهملات", icon:I.trash, count: () => DB.trash.length},
+  {id:"team", label:"الفريق والصلاحيات", icon:I.team, count: () => (DB.profiles || []).length, adminOnly: true},
+  {id:"settings", label:"الإعدادات والربط", icon:I.link}
+];
+let CURRENT = "dashboard";
+let bannerHidden = false;
+const filters = { q:"", specialty:"", source:"", stage:"", city:"", exp:"" };
+
+/* ============================================================
+   المصادقة وتحميل البيانات الحية من Supabase
+   ============================================================ */
+function mapCandidate(row){
+  return {
+    id: String(row.id),
+    name: row.name,
+    specialty: row.specialty,
+    title: row.title,
+    years: row.years,
+    city: row.city,
+    nationality: row.nationality,
+    phone: row.phone,
+    email: row.email,
+    source: row.source,
+    rating: row.rating,
+    stage: row.stage,
+    rejected: !!row.rejected,
+    shortlisted: !!row.shortlisted,
+    vacancyId: row.vacancy_id != null ? String(row.vacancy_id) : null,
+    pickedFor: row.picked_for != null ? String(row.picked_for) : null,
+    date: row.applied_date || (row.created_at ? row.created_at.slice(0,10) : TODAY.toISOString().slice(0,10)),
+    notes: row.notes,
+    cvFilePath: row.cv_file_path || null
+  };
+}
+/* رفع ملف السيرة الفعلي لمرشح داخل Supabase Storage، وربطه بسجل المرشح */
+async function uploadCandidateCv(candidateId, file){
+  const safeName = file.name.replace(/[^\w.\-]+/g, "_");
+  const path = `${candidateId}/${Date.now()}_${safeName}`;
+  const { error: upErr } = await sb.storage.from("cv-files").upload(path, file, { upsert: true });
+  if(upErr) throw new Error(upErr.message || "تعذّر رفع الملف");
+  const { error: dbErr } = await sb.from("candidates").update({ cv_file_path: path }).eq("id", Number(candidateId));
+  if(dbErr) throw new Error(dbErr.message || "تعذّر حفظ رابط الملف");
+  return path;
+}
+/* رابط مؤقت (ساعة واحدة) لعرض/تنزيل ملف سيرة مرفوع مسبقاً */
+async function getCandidateCvUrl(path){
+  const { data, error } = await sb.storage.from("cv-files").createSignedUrl(path, 3600);
+  if(error) throw new Error(error.message || "تعذّر فتح الملف");
+  return data.signedUrl;
+}
+function mapVacancy(row){
+  return {
+    id: String(row.id),
+    title: row.title,
+    client: row.client,
+    city: row.city,
+    count: row.headcount,
+    status: row.status,
+    opened: row.opened_date || (row.created_at ? row.created_at.slice(0,10) : TODAY.toISOString().slice(0,10)),
+    notes: row.notes
+  };
+}
+async function fetchProfile(user){
+  const { data, error } = await sb.from('profiles').select('full_name, email, role').eq('id', user.id).single();
+  if(error){ console.warn('profile fetch failed:', error.message); return null; }
+  return data;
+}
+async function fetchAllRows(table, selectCols){
+  // Supabase/PostgREST يرجّع 1000 صف كحد أقصى لكل طلب — نسحب على دفعات لين نجيب كل الصفوف
+  const PAGE = 1000;
+  let all = [];
+  let from = 0;
+  while(true){
+    const { data, error } = await sb.from(table).select(selectCols || '*').range(from, from + PAGE - 1);
+    if(error) throw new Error(error.message || ("تعذّرت قراءة جدول " + table));
+    if(!data || data.length === 0) break;
+    all = all.concat(data);
+    if(data.length < PAGE) break;
+    from += PAGE;
+  }
+  return all;
+}
+async function loadLiveData(profile, authUser){
+  const [cands, vacs, profs] = await Promise.all([
+    fetchAllRows('candidates'),
+    fetchAllRows('vacancies'),
+    fetchAllRows('profiles', 'id, email, full_name, role')
+  ]);
+  DB = Object.assign({}, FARZ_SEED, {
+    candidates: cands.map(mapCandidate),
+    vacancies: vacs.map(mapVacancy),
+    profiles: profs
+  });
+  DB.meta = Object.assign({}, FARZ_SEED.meta, {
+    owner: (profile && profile.full_name) || authUser.email,
+    role: (profile && profile.role === "admin") ? "مدير" : "عضو فريق",
+    lastUpdate: new Date().toISOString().slice(0,10),
+    currentUserId: authUser.id
+  });
+}
+function translateAuthError(err){
+  const m = (err && err.message) || "";
+  if (m.includes("Invalid login credentials")) return "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+  if (m.includes("Email not confirmed")) return "هذا الحساب لم يُفعّل بعد — تواصل مع بسام لتفعيله.";
+  if (m.includes("Failed to fetch")) return "تعذر الاتصال بالخادم — تأكد من اتصالك بالإنترنت.";
+  return "صار خطأ: " + m;
+}
+async function bootApp(user){
+  const err = document.getElementById("gateErr");
+  try{
+    const profile = await fetchProfile(user);
+    await loadLiveData(profile, user);
+    document.body.classList.remove("locked");
+    CURRENT = "dashboard";
+    go("dashboard");
+  }catch(e){
+    document.body.classList.add("locked");
+    if(err) err.textContent = "تعذّر تحميل البيانات: " + e.message;
+  }
+}
+async function doLogout(){
+  await sb.auth.signOut();
+  DB = null;
+  document.body.classList.add("locked");
+  const f = document.getElementById("gateForm"); if(f) f.reset();
+  const err = document.getElementById("gateErr"); if(err) err.textContent = "";
+}
+document.getElementById("gateForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById("gateBtn");
+  const err = document.getElementById("gateErr");
+  err.textContent = "";
+  btn.disabled = true; btn.textContent = "جاري التحقق…";
+  const email = document.getElementById("gateEmail").value.trim();
+  const password = document.getElementById("gatePass").value;
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  btn.disabled = false; btn.textContent = "دخول";
+  if(error){ err.textContent = translateAuthError(error); return; }
+  await bootApp(data.user);
+});
+
+function renderSidebar(){
+  let h = `<div class="brand">
+    <div class="brand-logo">صف</div>
+    <div><div class="brand-name">صلة فرز</div><div class="brand-sub">منصة إدارة التوظيف</div></div>
+  </div>`;
+  for(const item of NAV){
+    if(item.adminOnly && DB.meta.role !== "مدير") continue;
+    if(item.group){ h += `<div class="nav-label">${item.group}</div>`; continue; }
+    const cnt = item.count ? `<span class="nav-count">${item.count()}</span>` : "";
+    h += `<button class="nav-item ${CURRENT === item.id ? "active" : ""}" data-nav="${item.id}">${item.icon}<span>${item.label}</span>${cnt}</button>`;
+  }
+  h += `<div class="sidebar-foot"><div class="user-chip">
+    <div class="user-avatar">${esc(initials(DB.meta.owner))}</div>
+    <div><div class="user-name">${esc(DB.meta.owner)}</div><div class="user-role">${esc(DB.meta.role)}</div></div>
+  </div>
+  <button class="logout-link" id="logoutBtn">تسجيل الخروج</button>
+  </div>`;
+  $("#sidebar").innerHTML = h;
+  document.querySelectorAll("[data-nav]").forEach(b => b.onclick = () => go(b.dataset.nav));
+  const logoutBtn = $("#logoutBtn");
+  if(logoutBtn) logoutBtn.onclick = doLogout;
+}
+
+function connChip(key, name){
+  const c = DB.meta.connections[key];
+  const cls = c.status === "on" ? "on" : c.status === "wait" ? "wait" : "off";
+  const txt = c.status === "on" ? "مربوط" : "غير مربوط";
+  return `<span class="chip" data-tip="${esc(c.label)}"><span class="dot ${cls}"></span>${name}: ${txt}</span>`;
+}
+function renderTopbar(){
+  const v = VIEWS[CURRENT];
+  $("#topbar").innerHTML = `
+    <div class="page-title">${v.title}</div>
+    ${connChip("gmail","Gmail")}
+    ${connChip("device","مجلد الجهاز")}
+    <span class="chip" data-tip="البيانات مباشرة من قاعدة البيانات — آخر تحميل">⟳ ${fmtDate(DB.meta.lastUpdate)}</span>
+    <button class="icon-btn" id="themeBtn" title="الوضع الليلي / النهاري">◐</button>`;
+  $("#themeBtn").onclick = toggleTheme;
+}
+let themeMode = "auto";
+function toggleTheme(){
+  themeMode = themeMode === "auto" ? "dark" : themeMode === "dark" ? "light" : "auto";
+  const root = document.documentElement;
+  if(themeMode === "auto") root.removeAttribute("data-theme");
+  else root.setAttribute("data-theme", themeMode);
+}
+
+function go(id, keepScroll){
+  CURRENT = id;
+  const sy = keepScroll ? ($(".main").scrollTop || window.scrollY) : 0;
+  renderSidebar();
+  renderTopbar();
+  $("#view").innerHTML = VIEWS[id].render();
+  bindView();
+  $(".main").scrollTop = sy;
+  window.scrollTo(0, keepScroll ? sy : 0);
+}
+
+/* ---------- مكوّنات مشتركة ---------- */
+function demoBanner(){
+  if(!DB.meta.demo || bannerHidden) return "";
+  return `<div class="banner"><span>🧪</span><span><b>بيانات تجريبية للعرض.</b> أول ما نربط Gmail أو مجلد جهازك أو ملف الموقع القديم، بستبدلها ببياناتك الحقيقية — اطلب مني ذلك في المحادثة.</span><button class="close" data-close-banner>✕</button></div>`;
+}
+function statTile(label, value, delta, deltaUp){
+  return `<div class="stat"><div class="stat-label">${label}</div><div class="stat-value">${value}</div>${delta ? `<div class="stat-delta ${deltaUp ? "up" : ""}">${delta}</div>` : ""}</div>`;
+}
+function funnelBars(){
+  const counts = DB.stages.map(s => activeCands().filter(c => c.stage === s).length);
+  const max = Math.max(...counts, 1);
+  const ords = ["var(--ord1)","var(--ord2)","var(--ord3)","var(--ord4)","var(--ord5)"];
+  let h = "";
+  DB.stages.forEach((s, i) => {
+    const pct = Math.max(counts[i] / max * 100, 2);
+    h += `<div class="bar-row" data-tip="مرحلة ${esc(s)}: ${counts[i]} مرشح">
+      <div class="bar-label">${esc(s)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%; background:${ords[i]}"></div><span class="bar-val">${counts[i]}</span></div>
+    </div>`;
+  });
+  const rej = DB.candidates.filter(c => c.rejected).length;
+  h += `<div class="chart-note">✕ مرفوض: <b>${rej}</b> — خارج المسار، محفوظ في بنك السير.</div>`;
+  return h;
+}
+function delBtn(c){
+  return `<button class="row-del" data-exclude="${c.id}" title="${c.rejected ? "إرجاع المرشح للمسار" : "استبعاد المرشح"}">${c.rejected ? "↺" : "✕"}</button>`;
+}
+function pickBtn(c, vacId){
+  const picked = c.pickedFor === vacId;
+  return `<button class="pick-btn ${picked ? "on" : ""}" data-pick="${c.id}" data-vac="${vacId}" title="${picked ? "إلغاء اختياره لهذا الشاغر" : "اخترته كالشخص المناسب لهذا الشاغر"}">${picked ? "★ مُختار" : "☆ اختر"}</button>`;
+}
+function candRow(c){
+  return `<tr data-cand="${c.id}">
+    <td class="td-name">${esc(dn(c))}<div class="td-sub">${esc(c.title)}</div></td>
+    <td>${esc(c.specialty)}</td>
+    <td class="num">${yrs(c)}</td>
+    <td>${esc(c.city)}</td>
+    <td>${srcTag(c.source)}</td>
+    <td>${stars(c.rating)}</td>
+    <td>${stageBadge(c)}</td>
+    <td class="td-sub">${relDate(c.date)}</td>
+    <td>${delBtn(c)}</td>
+  </tr>`;
+}
+function candCard(c){
+  return `<div class="cand-card" data-cand="${c.id}">
+    <div class="cand-head">
+      <div class="cand-avatar">${esc(initials(dn(c)))}</div>
+      <div style="flex:1; min-width:0"><div class="cand-name">${esc(dn(c))} ${c.shortlisted ? "⭐" : ""}</div><div class="cand-title">${esc(c.title)}</div></div>
+      ${delBtn(c)}
+    </div>
+    <div class="cand-meta">
+      <span class="badge b-neutral">${esc(c.specialty)}</span>
+      <span class="badge b-neutral">${esc(c.city)}</span>
+      <span class="badge b-neutral">${yrs(c)}</span>
+    </div>
+    <div class="cand-foot">${stars(c.rating)} ${stageBadge(c)}</div>
+  </div>`;
+}
+
+/* ---------- عرض تدريجي للقوائم الكبيرة (مهم للجوال مع آلاف السير) ---------- */
+let SHOWN = {};
+function pagedList(list, key, per, fn){
+  const n = Math.min(SHOWN[key] || per, list.length);
+  const rest = list.length - n;
+  return {
+    html: list.slice(0, n).map(fn).join(""),
+    shown: n,
+    btn: rest > 0 ? `<button class="btn-more" data-more="${key}" data-per="${per}">عرض المزيد ⌄&nbsp;<span>(${rest.toLocaleString("en-US")} متبقية)</span></button>` : ""
+  };
+}
+
+/* ---------- الشاشات ---------- */
+const VIEWS = {
+  dashboard: {
+    title: "لوحة التحكم",
+    render(){
+      const latest = [...DB.candidates].sort((a,b) => b.date.localeCompare(a.date)).slice(0,5);
+      const t0 = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
+      const upcoming = DB.tasks.filter(t => !t.done && parseD(t.date) >= t0).sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time)).slice(0,4);
+      return `${demoBanner()}
+      <div class="kpis">
+        ${statTile("إجمالي السير في البنك", KPI.total().toLocaleString("en-US"), "+" + KPI.fresh().toLocaleString("en-US") + " هذا الأسبوع", KPI.fresh() > 0)}
+        ${statTile("قيد المعالجة", KPI.inProcess().toLocaleString("en-US"))}
+        ${statTile("في قائمة الترشيح", KPI.shortlisted().toLocaleString("en-US"))}
+        ${statTile("مقابلات ومهام قادمة", KPI.upcoming())}
+        ${statTile("شواغر مفتوحة", KPI.openVac())}
+      </div>
+      <div class="grid grid-2 section-gap">
+        <div class="card"><div class="card-title">مسار التوظيف <span class="hint">عدد المرشحين بكل مرحلة</span></div>${funnelBars()}</div>
+        <div class="card"><div class="card-title">القادم في جدولك <span class="hint">${fmtDateFull(TODAY.toISOString().slice(0,10))}</span></div>
+          ${upcoming.length ? upcoming.map(t => `
+            <div class="task-row">
+              <div><div class="task-title">${esc(t.title)}</div><div class="task-sub">${t.type} · ${fmtDate(t.date)}</div></div>
+              <div class="task-time">${t.time || "—"}</div>
+            </div>`).join("") : `<div class="empty">ما فيه مهام قادمة 🎉</div>`}
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card"><div class="card-title">آخر السير المضافة</div>
+          <div class="tbl-wrap"><table><tbody>
+            ${latest.map(c => `<tr data-cand="${c.id}"><td class="td-name">${esc(dn(c))}<div class="td-sub">${esc(c.specialty)}</div></td><td>${srcTag(c.source)}</td><td>${stageBadge(c)}</td><td class="td-sub">${relDate(c.date)}</td></tr>`).join("")}
+          </tbody></table></div>
+        </div>
+        <div class="card"><div class="card-title">حالة الربط</div>
+          ${["gmail","device","oldSite"].map(k => {
+            const names = {gmail:"بريد التوظيف (Gmail)", device:"مجلد السير على جهازك", oldSite:"بيانات الموقع القديم"};
+            const c = DB.meta.connections[k];
+            return `<div class="conn-card"><div class="conn-icon">${k === "gmail" ? "✉️" : k === "device" ? "📁" : "🌐"}</div>
+              <div><div class="conn-name">${names[k]} <span class="dot ${c.status === "on" ? "on" : "wait"}" style="display:inline-block; margin-inline-start:4px"></span></div>
+              <div class="conn-desc">${esc(c.label)}</div></div></div>`;
+          }).join("")}
+        </div>
+      </div>`;
+    }
+  },
+
+  cvbank: {
+    title: "بنك السير الذكية",
+    render(){
+      const list = filterCands();
+      const pg = pagedList(list, "cvbank", 150, candRow);
+      const EXP_OPTS = [["","كل مستويات الخبرة"],["none","غير محدد"],["0-3","0–3 سنوات"],["4-6","4–6 سنوات"],["7-10","7–10 سنوات"],["10+","أكثر من 10 سنوات"]];
+      return `${demoBanner()}
+      <div class="toolbar">
+        <div class="search">${I.search}<input id="q" placeholder="ابحث بالاسم، التخصص، المسمى، المدينة..." value="${esc(filters.q)}"></div>
+        <select class="select" id="fSpec"><option value="">كل التخصصات</option>${DB.specialties.map(s => `<option ${filters.specialty === s ? "selected" : ""}>${s}</option>`).join("")}</select>
+        <select class="select" id="fCity"><option value="">كل المدن</option>${DB.cities.map(ct => `<option ${filters.city === ct ? "selected" : ""}>${ct}</option>`).join("")}</select>
+        <select class="select" id="fExp">${EXP_OPTS.map(([v,l]) => `<option value="${v}" ${filters.exp === v ? "selected" : ""}>${l}</option>`).join("")}</select>
+        <select class="select" id="fSrc"><option value="">كل المصادر</option>${DB.sources.map(s => `<option ${filters.source === s ? "selected" : ""}>${s}</option>`).join("")}</select>
+        <select class="select" id="fStage"><option value="">كل المراحل</option>${DB.stages.map(s => `<option ${filters.stage === s ? "selected" : ""}>${s}</option>`).join("")}<option ${filters.stage === "مرفوض" ? "selected" : ""}>مرفوض</option></select>
+      </div>
+      <div class="card" style="padding:6px 10px">
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>الاسم</th><th>التخصص</th><th>الخبرة</th><th>المدينة</th><th>المصدر</th><th>التقييم</th><th>المرحلة</th><th>أضيفت</th><th></th></tr></thead>
+          <tbody>${list.length ? pg.html : `<tr><td colspan="9"><div class="empty" style="border:none">ما فيه نتائج مطابقة</div></td></tr>`}</tbody>
+        </table></div>
+        ${pg.btn}
+      </div>
+      <div class="result-count">عرض ${pg.shown.toLocaleString("en-US")} من ${list.length.toLocaleString("en-US")} نتيجة — إجمالي البنك ${DB.candidates.length.toLocaleString("en-US")} سيرة · لإضافة أو تعديل سيرة اطلبها من Claude في المحادثة، مثال: «أضف مرشح جديد اسمه ... تخصصه ...» · زر ✕ يستبعد السيرة مباشرة (مؤقت للعرض — للتثبيت قل لي: «استبعد [الاسم]»)</div>`;
+    }
+  },
+
+  candidates: {
+    title: "قائمة المرشحين",
+    render(){
+      const list = activeCands().sort((a,b) => DB.stages.indexOf(b.stage) - DB.stages.indexOf(a.stage));
+      const pg = pagedList(list, "cands", 120, candCard);
+      return `${demoBanner()}
+      <div class="cards">${pg.html}</div>
+      ${pg.btn}
+      <div class="result-count">${list.length.toLocaleString("en-US")} مرشح نشط (غير شامل المرفوضين) · لنقل مرشح بين المراحل قل لي مثلاً: «انقل [اسم المرشح] لمرحلة العرض الوظيفي»</div>`;
+    }
+  },
+
+  shortlist: {
+    title: "الترشيح",
+    render(){
+      const list = DB.candidates.filter(c => c.shortlisted && !c.rejected);
+      if(!list.length) return `${demoBanner()}<div class="empty"><div class="big">⭐</div><b>قائمة الترشيح فاضية</b><br>قل لي في المحادثة: «رشّح [اسم المرشح]» وبيظهر هنا.</div>`;
+      const pg = pagedList(list, "short", 120, candCard);
+      return `${demoBanner()}
+      <div class="cards">${pg.html}</div>
+      ${pg.btn}
+      <div class="result-count">${list.length.toLocaleString("en-US")} مرشح في القائمة المختصرة · لإزالة أحد قل: «شِل [الاسم] من الترشيح»</div>`;
+    }
+  },
+
+  vacancies: {
+    title: "الشواغر",
+    render(){
+      const stBadge = s => s === "مفتوح" ? `<span class="badge b-good">● مفتوح</span>` : s === "معلق" ? `<span class="badge b-warn">⏸ معلق</span>` : `<span class="badge b-neutral">مغلق</span>`;
+      const VMAX = 8;
+      return `${demoBanner()}
+      <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">
+        ${DB.vacancies.map(v => {
+          const linked = DB.candidates.filter(c => c.vacancyId === v.id && !c.rejected)
+            .sort((a,b) => (b.pickedFor === v.id) - (a.pickedFor === v.id) || b.date.localeCompare(a.date));
+          const pickedCount = linked.filter(c => c.pickedFor === v.id).length;
+          const shown = linked.slice(0, VMAX);
+          return `<div class="cand-card" data-vac="${v.id}" style="cursor:default">
+            <div class="cand-head">
+              <div class="cand-avatar" style="border-radius:10px">💼</div>
+              <div style="flex:1; min-width:0"><div class="cand-name">${esc(v.title)}</div><div class="cand-title">${esc(v.client)}</div></div>
+              ${stBadge(v.status)}
+            </div>
+            <div class="cand-meta">
+              <span class="badge b-neutral">${esc(v.city)}</span>
+              <span class="badge b-neutral">المطلوب: ${v.count}</span>
+              <span class="badge ${pickedCount >= v.count && v.count ? "b-good" : "b-stage1"}">${pickedCount} مُختار من ${v.count}</span>
+              <span class="badge b-neutral">${linked.length} مرشح مرتبط</span>
+            </div>
+            ${v.notes ? `<div class="td-sub" style="margin-top:8px">${esc(v.notes)}</div>` : ""}
+            <div class="vac-cands">
+              ${linked.length ? shown.map(c => `
+                <div class="vac-cand-row" data-cand="${c.id}">
+                  <div class="cand-avatar" style="width:26px; height:26px; font-size:10.5px; flex-shrink:0">${esc(initials(dn(c)))}</div>
+                  <div style="flex:1; min-width:0">
+                    <div class="td-name" style="font-size:12px">${esc(dn(c))}</div>
+                    <div class="td-sub">${esc(c.city)} · ${yrs(c)}</div>
+                  </div>
+                  ${pickBtn(c, v.id)}
+                </div>`).join("") + (linked.length > VMAX ? `<div class="kmore">+${linked.length - VMAX} غيرهم — دوّر عليهم في بنك السير</div>` : "")
+                : `<div class="kempty">ما فيه مرشحين مرتبطين بعد</div>`}
+            </div>
+            <div class="cand-foot"><span class="td-sub">فُتح ${fmtDate(v.opened)}</span></div>
+          </div>`;
+        }).join("")}
+      </div>
+      <div class="result-count">لإضافة شاغر جديد قل لي مثلاً: «أضف شاغر مبيعات لشركة بسام، الرياض، العدد 2» · لربط مرشح يدوياً بشاغر قل: «اربط [الاسم] بشاغر [المسمى]» · زر ☆ يختار الشخص المناسب للعرض الآن فقط — للتثبيت الدائم قل لي مثلاً: «اختر [الاسم] للشاغر [المسمى]»</div>`;
+    }
+  },
+
+  pipeline: {
+    title: "مسار التوظيف",
+    render(){
+      const ords = ["var(--ord1)","var(--ord2)","var(--ord3)","var(--ord4)","var(--ord5)"];
+      const KMAX = 40;
+      let cols = DB.stages.map((s, i) => {
+        const list = activeCands().filter(c => c.stage === s);
+        const shown = list.slice(0, KMAX);
+        return `<div class="kcol">
+          <div class="kcol-head"><span class="dot" style="background:${ords[i]}"></span>${esc(s)}<span class="kcol-count">${list.length.toLocaleString("en-US")}</span></div>
+          ${list.length ? shown.map(c => `<div class="kcard" data-cand="${c.id}">
+            <div class="kcard-name">${esc(dn(c))} ${c.shortlisted ? "⭐" : ""}</div>
+            <div class="kcard-sub">${esc(c.specialty)}${c.vacancyId ? " · " + esc((DB.vacancies.find(v => v.id === c.vacancyId) || {}).title || "") : ""}</div>
+          </div>`).join("") + (list.length > KMAX ? `<div class="kmore">+${(list.length - KMAX).toLocaleString("en-US")} غيرهم — ابحث عنهم في بنك السير</div>` : "") : `<div class="kempty">لا أحد هنا</div>`}
+        </div>`;
+      }).join("");
+      const rejected = DB.candidates.filter(c => c.rejected);
+      const rshown = rejected.slice(0, KMAX);
+      cols += `<div class="kcol">
+        <div class="kcol-head"><span style="color:var(--crit)">✕</span> مرفوض<span class="kcol-count">${rejected.length.toLocaleString("en-US")}</span></div>
+        ${rejected.length ? rshown.map(c => `<div class="kcard" data-cand="${c.id}" style="opacity:.75">
+          <div class="kcard-name">${esc(dn(c))}</div><div class="kcard-sub">${esc(c.specialty)}</div>
+        </div>`).join("") + (rejected.length > KMAX ? `<div class="kmore">+${(rejected.length - KMAX).toLocaleString("en-US")} غيرهم</div>` : "") : `<div class="kempty">لا أحد هنا</div>`}
+      </div>`;
+      return `${demoBanner()}<div class="kanban">${cols}</div>
+      <div class="result-count">لتحريك مرشح قل لي مثلاً: «انقل ريم العنزي إلى الفرز الأولي» أو «ارفض فهد المطيري»</div>`;
+    }
+  },
+
+  tasks: {
+    title: "المهام والمقابلات",
+    render(){
+      const sorted = [...DB.tasks].sort((a,b) => (a.date + a.time).localeCompare(b.date + b.time));
+      const byDate = {};
+      sorted.forEach(t => { (byDate[t.date] = byDate[t.date] || []).push(t); });
+      const typeBadge = t => t === "مقابلة" ? `<span class="badge b-stage1">🎙 مقابلة</span>` : t === "اتصال" ? `<span class="badge b-neutral">📞 اتصال</span>` : `<span class="badge b-neutral">✓ مهمة</span>`;
+      let h = "";
+      for(const d of Object.keys(byDate)){
+        h += `<div class="task-day">${fmtDateFull(d)} ${d === TODAY.toISOString().slice(0,10) ? "· اليوم" : ""}</div>`;
+        h += byDate[d].map(t => {
+          const cand = t.candidateId ? DB.candidates.find(c => c.id === t.candidateId) : null;
+          return `<div class="task-row ${t.done ? "done" : ""}">
+            <button class="task-check" data-task="${t.id}" title="تبديل الحالة (مؤقت — التثبيت عن طريق المحادثة)">✓</button>
+            <div><div class="task-title">${esc(t.title)}</div><div class="task-sub">${cand ? esc(cand.specialty) + " · " : ""}${typeBadge(t.type)}</div></div>
+            <div class="task-time">${t.time || "طوال اليوم"}</div>
+          </div>`;
+        }).join("");
+      }
+      return `${demoBanner()}${h || `<div class="empty">ما فيه مهام</div>`}
+      <div class="result-count">لإضافة موعد قل لي مثلاً: «حط مقابلة مع نورة الدوسري الأحد الساعة 11» · تعليم المهمة هنا مؤقت للعرض — التثبيت النهائي يكون بالمحادثة</div>`;
+    }
+  },
+
+  reports: {
+    title: "التقارير",
+    render(){
+      /* توزيع التخصصات — أعمدة أفقية بلون واحد (تسلسل مقداري على فئات اسمية = لون موحد) */
+      const specCounts = DB.specialties
+        .map(s => ({ s, n: DB.candidates.filter(c => c.specialty === s).length }))
+        .filter(x => x.n > 0).sort((a,b) => b.n - a.n);
+      const shown = specCounts.slice(0, 8);
+      const rest = specCounts.slice(8).reduce((a,x) => a + x.n, 0);
+      if(rest > 0) shown.push({ s: "أخرى (مجمّعة)", n: rest });
+      const maxN = Math.max(...shown.map(x => x.n), 1);
+      const specBars = shown.map(x => `
+        <div class="bar-row" data-tip="${esc(x.s)}: ${x.n} من ${DB.candidates.length} سيرة">
+          <div class="bar-label" title="${esc(x.s)}">${esc(x.s)}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.max(x.n / maxN * 100, 2)}%; background:var(--s1)"></div><span class="bar-val">${x.n}</span></div>
+        </div>`).join("");
+
+      /* مصدر السير — جزء من كل: شريط مكدّس + مفتاح بالأرقام */
+      const srcCounts = DB.sources.map(s => ({ s, n: DB.candidates.filter(c => c.source === s).length })).filter(x => x.n > 0);
+      const totalSrc = srcCounts.reduce((a,x) => a + x.n, 0) || 1;
+      const stack = srcCounts.map(x => `<div class="stack-seg" data-tip="${esc(x.s)}: ${x.n} (${Math.round(x.n / totalSrc * 100)}%)" style="flex:${x.n}; background:${SRC_COLORS[x.s]}"></div>`).join("");
+      const legend = srcCounts.map(x => `<span class="key"><span class="sw" style="background:${SRC_COLORS[x.s]}"></span>${esc(x.s)} <b>${x.n}</b> (${Math.round(x.n / totalSrc * 100)}%)</span>`).join("");
+
+      /* جدول تفصيلي — النسخة الجدولية لكل الرسوم */
+      const tblRows = specCounts.map(x => `<tr><td>${esc(x.s)}</td><td class="num">${x.n}</td><td class="num">${Math.round(x.n / DB.candidates.length * 100)}%</td></tr>`).join("");
+
+      return `${demoBanner()}
+      <div class="kpis">
+        ${statTile("إجمالي السير", KPI.total())}
+        ${statTile("نسبة الترشيح", Math.round(KPI.shortlisted() / Math.max(KPI.total(),1) * 100) + "%")}
+        ${statTile("تم تعيينهم", DB.candidates.filter(c => c.stage === "تعيين" && !c.rejected).length)}
+        ${statTile("نسبة الرفض", Math.round(DB.candidates.filter(c => c.rejected).length / Math.max(KPI.total(),1) * 100) + "%")}
+      </div>
+      <div class="grid grid-2 section-gap">
+        <div class="card"><div class="card-title">توزيع التخصصات <span class="hint">أعلى ٨ + المجمّع</span></div>${specBars}</div>
+        <div class="card">
+          <div class="card-title">مصدر السير الذاتية <span class="hint">جزء من الكل</span></div>
+          <div class="stack">${stack}</div>
+          <div class="legend">${legend}</div>
+          <div style="margin-top:18px" class="card-title">مسار التوظيف</div>
+          ${funnelBars()}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">تفصيل التخصصات — عرض جدولي</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>التخصص</th><th>عدد السير</th><th>النسبة</th></tr></thead>
+          <tbody>${tblRows}</tbody>
+        </table></div>
+      </div>
+      <div class="result-count">تبي تقرير جاهز للإرسال؟ قل لي: «اطلع لي تقرير أسبوعي PDF» أو «صدّر بنك السير Excel»</div>`;
+    }
+  },
+
+  trash: {
+    title: "سلة المهملات",
+    render(){
+      if(!DB.trash.length) return `${demoBanner()}<div class="empty"><div class="big">🗑</div><b>السلة فاضية</b></div>`;
+      return `${demoBanner()}
+      <div class="card" style="padding:6px 10px"><div class="tbl-wrap"><table>
+        <thead><tr><th>الاسم</th><th>سبب الحذف</th><th>تاريخ الحذف</th></tr></thead>
+        <tbody>${DB.trash.map(x => `<tr style="cursor:default"><td class="td-name">${esc(x.name)}</td><td>${esc(x.reason)}</td><td class="td-sub">${fmtDate(x.date)}</td></tr>`).join("")}</tbody>
+      </table></div></div>
+      <div class="result-count">للاسترجاع قل لي: «رجّع [الاسم] من سلة المهملات» · وللحذف النهائي: «فرّغ السلة»</div>`;
+    }
+  },
+
+  team: {
+    title: "الفريق والصلاحيات",
+    render(){
+      if(DB.meta.role !== "مدير") return `<div class="empty"><div class="big">🔒</div><b>هذي الصفحة للمدير فقط</b></div>`;
+      const list = DB.profiles || [];
+      const rows = list.map(p => {
+        const isMe = p.id === DB.meta.currentUserId;
+        const isAdmin = p.role === "admin";
+        return `<tr style="cursor:default">
+          <td class="td-name">${esc(p.full_name || p.email)}${isMe ? ` <span class="td-sub">(أنت)</span>` : ""}</td>
+          <td class="td-sub">${esc(p.email)}</td>
+          <td><span class="badge ${isAdmin ? "b-stage1" : "b-neutral"}">${isAdmin ? "مدير" : "عضو فريق"}</span></td>
+          <td style="display:flex; gap:6px; flex-wrap:wrap">${isMe
+              ? `<span class="td-sub">لا يمكنك تعديل أو حذف حسابك من هنا</span>`
+              : `<button class="row-del" style="width:auto; height:auto; padding:6px 12px; font-weight:700" data-toggle-role="${esc(p.id)}" data-new-role="${isAdmin ? "member" : "admin"}">${isAdmin ? "تنزيل لعضو" : "ترقية لمدير"}</button>
+                 <button class="row-del" style="width:auto; height:auto; padding:6px 12px; font-weight:700; color:var(--crit)" data-delete-member="${esc(p.id)}" data-name="${esc(p.full_name || p.email)}">حذف</button>`}
+          </td>
+        </tr>`;
+      }).join("");
+      return `
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">إضافة عضو جديد</div>
+        <form id="addMemberForm" style="display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end">
+          <div style="flex:1; min-width:140px">
+            <label class="gate-label" style="margin-bottom:4px">الاسم</label>
+            <input class="gate-input" id="nmFullName" style="margin-bottom:0" required>
+          </div>
+          <div style="flex:1; min-width:160px">
+            <label class="gate-label" style="margin-bottom:4px">الإيميل (حتى لو وهمي مثل user@silah.local)</label>
+            <input class="gate-input" id="nmEmail" type="email" style="margin-bottom:0" required>
+          </div>
+          <div style="flex:1; min-width:140px">
+            <label class="gate-label" style="margin-bottom:4px">كلمة المرور</label>
+            <input class="gate-input" id="nmPassword" style="margin-bottom:0" required>
+          </div>
+          <div style="min-width:120px">
+            <label class="gate-label" style="margin-bottom:4px">الصلاحية</label>
+            <select class="select" id="nmRole" style="width:100%; padding:11px 10px"><option value="member">عضو فريق</option><option value="admin">مدير</option></select>
+          </div>
+          <button class="gate-btn" type="submit" style="width:auto; padding:11px 20px; margin-top:0">إضافة</button>
+        </form>
+        <div class="gate-err" id="addMemberErr" style="text-align:start"></div>
+      </div>
+      <div class="card" style="padding:6px 10px">
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>الاسم</th><th>الإيميل</th><th>الصلاحية</th><th></th></tr></thead>
+          <tbody>${rows || `<tr><td colspan="4"><div class="empty" style="border:none">ما فيه أعضاء بعد</div></td></tr>`}</tbody>
+        </table></div>
+      </div>
+      <div class="result-count">${list.length.toLocaleString("en-US")} عضو</div>`;
+    }
+  },
+
+  settings: {
+    title: "الإعدادات والربط",
+    render(){
+      const conns = [
+        { icon:"✉️", name:"بريد التوظيف — Gmail", key:"gmail",
+          desc:"فعّل كونكتور Gmail من إعدادات هذي المحادثة (أيقونة الأدوات عند مربع الكتابة) وسجّل دخول Google بإيميل التوظيف bajop369@gmail.com. ملاحظة: ما يحتاج يكون الإيميل مسجل في كلاود — بس نعطيه صلاحية القراءة." },
+        { icon:"📁", name:"مجلد السير على جهازك", key:"device",
+          desc:"من تطبيق Claude اضغط زر «Add folder» واختر المجلد اللي فيه ملفات السير (PDF / Word)، أو اكتب لي مسار المجلد وأنا أطلب الوصول." },
+        { icon:"🌐", name:"الموقع القديم (chatgpt.site)", key:"oldSite",
+          desc:"افتح موقعك القديم → «استيراد وتصدير» → صدّر البيانات Excel وأرسل الملف لي في المحادثة، وأنا أدمجها هنا." }
+      ];
+      const cmds = [
+        ["اسحب السير الجديدة من الإيميل", "يبحث في bajop369@gmail.com عن رسائل التقديم الجديدة ويضيفها للبنك"],
+        ["أضف مرشح: [الاسم]، تخصص [..]، خبرة [..] سنوات", "إضافة سيرة يدوياً"],
+        ["انقل [الاسم] إلى مرحلة [المقابلة / العرض / التعيين]", "تحريك مرشح في المسار"],
+        ["رشّح [الاسم]", "إضافته لقائمة الترشيح ⭐"],
+        ["أضف شاغر [المسمى] لشركة/مشروع [الاسم]، المدينة، العدد [كم]", "فتح شاغر جديد"],
+        ["اربط [الاسم] بشاغر [المسمى]", "ربط مرشح يدوياً بشاغر معيّن"],
+        ["اختر [الاسم] كالشخص المناسب لشاغر [المسمى]", "تثبيت الاختيار بشكل دائم"],
+        ["استبعد [الاسم]", "نقله لمرحلة مرفوض (يبقى محفوظاً في البنك)"],
+        ["حط مقابلة مع [الاسم] يوم [..] الساعة [..]", "جدولة مقابلة أو مهمة"],
+        ["اطلع لي تقرير أسبوعي PDF", "تقرير جاهز للإرسال للعملاء"],
+        ["صدّر بنك السير Excel", "ملف إكسل بكل البيانات"]
+      ];
+      return `
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-title">الربط والمصادر</div>
+          ${conns.map(c => {
+            const st = DB.meta.connections[c.key];
+            return `<div class="conn-card"><div class="conn-icon">${c.icon}</div>
+              <div><div class="conn-name">${c.name} <span class="badge ${st.status === "on" ? "b-good" : "b-warn"}" style="margin-inline-start:6px">${st.status === "on" ? "✓ مربوط" : "بانتظار الربط"}</span></div>
+              <div class="conn-desc">${c.desc}</div></div></div>`;
+          }).join("")}
+        </div>
+        <div class="card">
+          <div class="card-title">أوامر جاهزة — انسخها وأرسلها لي في المحادثة</div>
+          ${cmds.map(c => `<button class="cmd" data-copy="${esc(c[0])}"><b>«${c[0]}»</b><br><span style="font-size:11px; color:var(--muted)">${c[1]}</span></button>`).join("")}
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="card-title">عن المنصة</div>
+        <div class="detail-grid">
+          <div class="detail-item"><div class="dl">المالك</div><div class="dv">${esc(DB.meta.owner)} — ${esc(DB.meta.role)}</div></div>
+          <div class="detail-item"><div class="dl">آخر تحديث للبيانات</div><div class="dv">${fmtDateFull(DB.meta.lastUpdate)}</div></div>
+          <div class="detail-item"><div class="dl">عدد السجلات</div><div class="dv">${DB.candidates.length} سيرة · ${DB.vacancies.length} شواغر · ${DB.tasks.length} مهام</div></div>
+          <div class="detail-item"><div class="dl">الإصدار</div><div class="dv">صلة فرز ${DB.meta.version} — مبنية داخل Claude Cowork</div></div>
+        </div>
+        <div class="modal-note">💡 هذي اللوحة للعرض والتصفح — أي إضافة أو تعديل أو سحب بيانات يتم عن طريق الطلب من Claude في المحادثة، وبيحدّث اللوحة ويرجع لك أحدث نسخة.</div>
+      </div>`;
+    }
+  }
+};
+
+/* ---------- الفلترة ---------- */
+function filterCands(){
+  const nq = normAr(filters.q);
+  return DB.candidates.filter(c => {
+    if(nq){
+      const hay = normAr([c.name || "", c.title, c.specialty, c.city, c.notes, c.email, c.source, c.phone || ""].join(" "));
+      if(!hay.includes(nq)) return false;
+    }
+    if(filters.specialty && c.specialty !== filters.specialty) return false;
+    if(filters.city && c.city !== filters.city) return false;
+    if(filters.exp){
+      const y = c.years;
+      if(filters.exp === "none"){ if(y !== null && y !== undefined) return false; }
+      else if(y === null || y === undefined) return false;
+      else if(filters.exp === "0-3" && !(y >= 0 && y <= 3)) return false;
+      else if(filters.exp === "4-6" && !(y >= 4 && y <= 6)) return false;
+      else if(filters.exp === "7-10" && !(y >= 7 && y <= 10)) return false;
+      else if(filters.exp === "10+" && !(y > 10)) return false;
+    }
+    if(filters.source && c.source !== filters.source) return false;
+    if(filters.stage === "مرفوض"){ if(!c.rejected) return false; }
+    else if(filters.stage){ if(c.rejected || c.stage !== filters.stage) return false; }
+    return true;
+  }).sort((a,b) => b.date.localeCompare(a.date));
+}
+
+/* ---------- ربط الأحداث بعد كل عرض ---------- */
+function bindView(){
+  document.querySelectorAll("[data-more]").forEach(el => el.onclick = () => {
+    const k = el.dataset.more;
+    SHOWN[k] = (SHOWN[k] || parseInt(el.dataset.per, 10)) + 500;
+    go(CURRENT, true);
+  });
+  document.querySelectorAll("[data-cand]").forEach(el => el.onclick = () => openModal(el.dataset.cand));
+  document.querySelectorAll("[data-exclude]").forEach(el => el.onclick = e => {
+    e.stopPropagation();
+    const c = DB.candidates.find(x => x.id === el.dataset.exclude);
+    if(!c) return;
+    c.rejected = !c.rejected;
+    go(CURRENT, true);
+    sb.from("candidates").update({ rejected: c.rejected }).eq("id", Number(c.id)).then(({error}) => {
+      if(error){ console.error("reject toggle failed:", error.message); c.rejected = !c.rejected; go(CURRENT, true); }
+    });
+  });
+  document.querySelectorAll("[data-pick]").forEach(el => el.onclick = e => {
+    e.stopPropagation();
+    const c = DB.candidates.find(x => x.id === el.dataset.pick);
+    const vacId = el.dataset.vac;
+    if(!c) return;
+    const prev = c.pickedFor;
+    c.pickedFor = (c.pickedFor === vacId) ? null : vacId;
+    go(CURRENT, true);
+    sb.from("candidates").update({ picked_for: c.pickedFor ? Number(c.pickedFor) : null }).eq("id", Number(c.id)).then(({error}) => {
+      if(error){ console.error("pick toggle failed:", error.message); c.pickedFor = prev; go(CURRENT, true); }
+    });
+  });
+  document.querySelectorAll("[data-close-banner]").forEach(el => el.onclick = e => { e.stopPropagation(); bannerHidden = true; go(CURRENT); });
+  document.querySelectorAll("[data-toggle-role]").forEach(el => el.onclick = e => {
+    e.stopPropagation();
+    const id = el.dataset.toggleRole;
+    const newRole = el.dataset.newRole;
+    const p = (DB.profiles || []).find(x => x.id === id);
+    if(!p) return;
+    const prevRole = p.role;
+    p.role = newRole;
+    go(CURRENT, true);
+    sb.from("profiles").update({ role: newRole }).eq("id", id).then(({error}) => {
+      if(error){ console.error("role toggle failed:", error.message); p.role = prevRole; go(CURRENT, true); }
+    });
+  });
+  document.querySelectorAll("[data-delete-member]").forEach(el => el.onclick = async e => {
+    e.stopPropagation();
+    const id = el.dataset.deleteMember;
+    const name = el.dataset.name;
+    if(!confirm(`متأكد تبي تحذف ${name}؟ ما يتراجع الإجراء.`)) return;
+    el.disabled = true;
+    const { data, error } = await sb.functions.invoke("swift-handler", { body: { action: "delete", user_id: id } });
+    el.disabled = false;
+    if(error || (data && data.error)){
+      alert("تعذّر الحذف: " + ((data && data.error) || (error && error.message) || "خطأ غير معروف"));
+      return;
+    }
+    DB.profiles = (DB.profiles || []).filter(x => x.id !== id);
+    go(CURRENT, true);
+  });
+  const addMemberForm = $("#addMemberForm");
+  if(addMemberForm){
+    addMemberForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      const err = $("#addMemberErr");
+      err.textContent = "";
+      const full_name = $("#nmFullName").value.trim();
+      const email = $("#nmEmail").value.trim();
+      const password = $("#nmPassword").value;
+      const role = $("#nmRole").value;
+      const btn = addMemberForm.querySelector("button[type=submit]");
+      btn.disabled = true; btn.textContent = "جاري الإضافة…";
+      const { data, error } = await sb.functions.invoke("swift-handler", { body: { action: "create", email, password, full_name, role } });
+      btn.disabled = false; btn.textContent = "إضافة";
+      if(error || (data && data.error)){
+        err.textContent = "تعذّرت الإضافة: " + ((data && data.error) || (error && error.message) || "خطأ غير معروف");
+        return;
+      }
+      DB.profiles = DB.profiles || [];
+      DB.profiles.push({ id: data.id, email, full_name, role });
+      go(CURRENT, true);
+    });
+  }
+  document.querySelectorAll("[data-task]").forEach(el => el.onclick = () => {
+    const t = DB.tasks.find(t => t.id === el.dataset.task);
+    if(t){ t.done = !t.done; go(CURRENT); }
+  });
+  function legacyCopy(txt){
+    try{
+      const ta = document.createElement("textarea");
+      ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    }catch(e){ return false; }
+  }
+  document.querySelectorAll("[data-copy]").forEach(el => el.onclick = () => {
+    const txt = el.dataset.copy;
+    const flash = ok => { el.style.borderColor = ok ? "var(--good)" : "var(--crit)"; setTimeout(() => el.style.borderColor = "", 900); };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(() => flash(true)).catch(() => flash(legacyCopy(txt)));
+    } else {
+      flash(legacyCopy(txt));
+    }
+  });
+  const q = $("#q");
+  if(q){
+    q.oninput = () => { filters.q = q.value; refreshTableOnly(); };
+    const fS = $("#fSpec"), fR = $("#fSrc"), fG = $("#fStage"), fC = $("#fCity"), fE = $("#fExp");
+    fS.onchange = () => { filters.specialty = fS.value; go(CURRENT); };
+    fR.onchange = () => { filters.source = fR.value; go(CURRENT); };
+    fG.onchange = () => { filters.stage = fG.value; go(CURRENT); };
+    if(fC) fC.onchange = () => { filters.city = fC.value; go(CURRENT); };
+    if(fE) fE.onchange = () => { filters.exp = fE.value; go(CURRENT); };
+  }
+}
+function refreshTableOnly(){
+  /* إعادة رسم مع الحفاظ على تركيز البحث */
+  const pos = $("#q").selectionStart;
+  go(CURRENT);
+  const q = $("#q");
+  if(q){ q.focus(); q.setSelectionRange(pos, pos); }
+}
+
+/* ---------- نافذة تفاصيل المرشح ---------- */
+function openModal(id){
+  const c = DB.candidates.find(x => x.id === id);
+  if(!c) return;
+  const curIdx = DB.stages.indexOf(c.stage);
+  const timeline = c.rejected
+    ? `<div class="modal-note" style="background:rgba(208,59,59,.1); color:var(--crit)">✕ هذا المرشح مرفوض — محفوظ في بنك السير لفرص مستقبلية. للاسترجاع قل: «رجّع ${esc(dn(c))} للمسار»</div>`
+    : `<div class="timeline">${DB.stages.map((s, i) => `
+        <div class="tl-step ${i <= curIdx ? "on" : ""} ${i === curIdx ? "cur" : ""}">
+          <div class="tl-line"></div><div class="tl-dot"></div><div class="tl-name">${s}</div>
+        </div>`).join("")}</div>`;
+  $("#modal").innerHTML = `
+    <div class="modal-head">
+      <div class="cand-avatar" style="width:44px; height:44px; font-size:16px">${esc(initials(dn(c)))}</div>
+      <div>
+        <div style="font-weight:800; font-size:16px">${esc(dn(c))} ${c.shortlisted ? "⭐" : ""}</div>
+        <div class="td-sub">${esc(c.title)}</div>
+      </div>
+      <button class="modal-close" id="mClose">✕</button>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center">
+      <span class="badge b-neutral">${esc(c.specialty)}</span>
+      ${stageBadge(c)}
+      ${stars(c.rating)}
+    </div>
+    ${timeline}
+    <div class="detail-grid">
+      <div class="detail-item"><div class="dl">سنوات الخبرة</div><div class="dv">${yrs(c)}</div></div>
+      <div class="detail-item"><div class="dl">المدينة</div><div class="dv">${esc(c.city)}</div></div>
+      <div class="detail-item"><div class="dl">الجنسية</div><div class="dv">${esc(c.nationality || "—")}</div></div>
+      <div class="detail-item"><div class="dl">المصدر</div><div class="dv">${srcTag(c.source)}</div></div>
+      <div class="detail-item"><div class="dl">الجوال</div><div class="dv" style="direction:ltr; text-align:end">${c.phone ? `<button class="cp-mini" data-copy="${esc(c.phone)}">${esc(c.phone)} 📋</button>` : "—"}</div></div>
+      <div class="detail-item"><div class="dl">الإيميل</div><div class="dv" style="direction:ltr; text-align:end">${c.email ? `<button class="cp-mini" data-copy="${esc(c.email)}">${esc(c.email)} 📋</button>` : "—"}</div></div>
+      <div class="detail-item"><div class="dl">الشاغر المرتبط</div><div class="dv">${vacName(c.vacancyId) ? esc(vacName(c.vacancyId)) : "—"}</div></div>
+      <div class="detail-item"><div class="dl">تاريخ الإضافة</div><div class="dv">${fmtDateFull(c.date)}</div></div>
+    </div>
+    ${c.cvFilePath ? `
+    <button class="btn-gmail" id="cvViewBtn" type="button">📄 عرض / تنزيل ملف السيرة</button>
+    <label class="btn-gmail" for="cvUploadInput" style="margin-top:6px; opacity:.7; font-size:11px; padding:8px">🔄 استبدال الملف بنسخة جديدة</label>
+    ` : `
+    <label class="btn-gmail" for="cvUploadInput">📄 رفع ملف السيرة (PDF أو Word)</label>
+    `}
+    <input type="file" id="cvUploadInput" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none">
+    <div class="td-sub" id="cvUploadStatus" style="text-align:center; margin:2px 0 4px; min-height:14px"></div>
+    ${gmailSearchLink(c) ? `<a href="${esc(gmailSearchLink(c))}" target="_blank" rel="noopener" style="display:block; text-align:center; font-size:10.5px; color:var(--muted); margin-bottom:8px">أو افتح الرسالة الأصلية في Gmail (يحتاج bajop369@gmail.com)</a>` : ""}
+    <div class="dl" style="font-size:10.5px; color:var(--muted); margin-bottom:4px">ملاحظات الفرز</div>
+    <div class="notes-box">${esc(c.notes || "لا توجد ملاحظات")}</div>
+    <div class="modal-note">✏️ للتعديل اطلب مني في المحادثة، مثال: «انقل ${esc(dn(c))} لمرحلة ${curIdx < 4 && !c.rejected ? esc(DB.stages[curIdx+1] || "التعيين") : "المقابلة"}» أو «عدّل تقييم ${esc(dn(c))} إلى 5»</div>`;
+  $("#overlay").classList.add("open");
+  $("#mClose").onclick = closeModal;
+  const cvViewBtn = $("#cvViewBtn");
+  const cvInput = $("#cvUploadInput");
+  const cvStatus = $("#cvUploadStatus");
+  if(cvViewBtn) cvViewBtn.onclick = async () => {
+    cvViewBtn.disabled = true; cvViewBtn.textContent = "جاري الفتح…";
+    try{
+      const url = await getCandidateCvUrl(c.cvFilePath);
+      window.open(url, "_blank");
+    }catch(e){
+      if(cvStatus) cvStatus.textContent = "خطأ: " + e.message;
+    }
+    cvViewBtn.disabled = false; cvViewBtn.textContent = "📄 عرض / تنزيل ملف السيرة";
+  };
+  if(cvInput) cvInput.onchange = async () => {
+    const file = cvInput.files[0];
+    if(!file) return;
+    if(file.size > 20 * 1024 * 1024){
+      if(cvStatus) cvStatus.textContent = "الملف أكبر من 20 ميجا — اختر ملف أصغر";
+      cvInput.value = "";
+      return;
+    }
+    if(cvStatus) cvStatus.textContent = "جاري الرفع…";
+    try{
+      const path = await uploadCandidateCv(c.id, file);
+      const dbC = DB.candidates.find(x => x.id === c.id);
+      if(dbC) dbC.cvFilePath = path;
+      openModal(c.id);
+      go(CURRENT, true);
+    }catch(e){
+      if(cvStatus) cvStatus.textContent = "خطأ: " + e.message;
+    }
+  };
+}
+function closeModal(){ $("#overlay").classList.remove("open"); }
+$("#overlay").addEventListener("click", e => { if(e.target === $("#overlay")) closeModal(); });
+document.addEventListener("keydown", e => { if(e.key === "Escape") closeModal(); });
+
+/* ---------- تلميحات (Tooltip) ---------- */
+const tip = $("#tooltip");
+document.addEventListener("mouseover", e => {
+  const el = e.target.closest("[data-tip]");
+  if(!el){ tip.style.display = "none"; return; }
+  tip.textContent = el.dataset.tip;
+  tip.style.display = "block";
+});
+document.addEventListener("mousemove", e => {
+  if(tip.style.display !== "block") return;
+  const pad = 12, w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = e.clientX - w - pad; /* في RTL نفضّل يسار المؤشر */
+  if(x < 8) x = e.clientX + pad;
+  let y = e.clientY - h - pad;
+  if(y < 8) y = e.clientY + pad;
+  tip.style.left = Math.min(x, window.innerWidth - w - 8) + "px";
+  tip.style.top = Math.min(y, window.innerHeight - h - 8) + "px";
+});
+
+/* ---------- تشغيل ---------- */
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if(session && session.user){
+    await bootApp(session.user);
+  }
+  /* لا يوجد جلسة — تبقى بوابة الدخول ظاهرة (body.locked من البداية) */
+})();
+</script>
+</body>
+</html>
